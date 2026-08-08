@@ -9,7 +9,6 @@ from pathlib import Path
 
 app = Flask(__name__)
 
-# Directory containing app.py
 BASE_DIR = Path(__file__).resolve().parent
 
 
@@ -35,17 +34,49 @@ similarity_scores = pickle.load(
 
 
 # --------------------------------------------------
+# Select Best Image Column
+# --------------------------------------------------
+
+if "Image-URL-L" in popular_df.columns:
+    POPULAR_IMAGE_COLUMN = "Image-URL-L"
+else:
+    POPULAR_IMAGE_COLUMN = "Image-URL-M"
+
+
+if "Image-URL-L" in books.columns:
+    BOOK_IMAGE_COLUMN = "Image-URL-L"
+else:
+    BOOK_IMAGE_COLUMN = "Image-URL-M"
+
+
+# --------------------------------------------------
+# Remove Books Without Images
+# --------------------------------------------------
+
+popular_df = popular_df[
+    popular_df[POPULAR_IMAGE_COLUMN].notna()
+]
+
+popular_df = popular_df[
+    popular_df[POPULAR_IMAGE_COLUMN].astype(str).str.strip() != ""
+]
+
+
+books = books[
+    books[BOOK_IMAGE_COLUMN].notna()
+]
+
+books = books[
+    books[BOOK_IMAGE_COLUMN].astype(str).str.strip() != ""
+]
+
+
+# --------------------------------------------------
 # Home Page
 # --------------------------------------------------
 
 @app.route("/")
 def index():
-
-    # Use large book cover images when available
-    if "Image-URL-L" in popular_df.columns:
-        image_column = "Image-URL-L"
-    else:
-        image_column = "Image-URL-M"
 
     return render_template(
         "index.html",
@@ -54,7 +85,7 @@ def index():
 
         author=popular_df["Book-Author"].tolist(),
 
-        image=popular_df[image_column].tolist(),
+        image=popular_df[POPULAR_IMAGE_COLUMN].tolist(),
 
         votes=popular_df["num_ratings"].tolist(),
 
@@ -81,13 +112,11 @@ def recommend_ui():
 @app.route("/recommend_books", methods=["POST"])
 def recommend():
 
-    # Get user input safely
     user_input = request.form.get(
         "user_input",
         ""
     ).strip().lower()
 
-    # Check empty input
     if not user_input:
 
         return render_template(
@@ -95,6 +124,7 @@ def recommend():
             data=[],
             message="Please enter a book name!"
         )
+
 
     # --------------------------------------------------
     # Find Matching Book
@@ -109,7 +139,7 @@ def recommend():
             match = book
             break
 
-    # Book not found
+
     if match is None:
 
         return render_template(
@@ -127,6 +157,7 @@ def recommend():
         pt.index == match
     )[0][0]
 
+
     similar_items = sorted(
         list(
             enumerate(
@@ -135,18 +166,16 @@ def recommend():
         ),
         key=lambda x: x[1],
         reverse=True
-    )[1:5]
+    )
 
 
     # --------------------------------------------------
-    # Prepare Recommendation Data
+    # Prepare Recommendations
     # --------------------------------------------------
 
     data = []
 
-    for i in similar_items:
-
-        item = []
+    for i in similar_items[1:]:
 
         recommended_title = pt.index[i[0]]
 
@@ -158,30 +187,53 @@ def recommend():
             "Book-Title"
         )
 
-        # Book title
-        item.extend(
-            temp_df["Book-Title"].tolist()
-        )
 
-        # Author
-        item.extend(
-            temp_df["Book-Author"].tolist()
-        )
+        if temp_df.empty:
+            continue
 
-        # Use large image if available
-        if "Image-URL-L" in temp_df.columns:
 
-            item.extend(
-                temp_df["Image-URL-L"].tolist()
-            )
+        # Get image
+        image_url = temp_df.iloc[0][BOOK_IMAGE_COLUMN]
 
-        else:
 
-            item.extend(
-                temp_df["Image-URL-M"].tolist()
-            )
+        # Skip books without an image
+        if (
+            image_url is None
+            or str(image_url).strip() == ""
+            or str(image_url).lower() == "nan"
+        ):
+            continue
+
+
+        item = [
+
+            temp_df.iloc[0]["Book-Title"],
+
+            temp_df.iloc[0]["Book-Author"],
+
+            image_url
+
+        ]
 
         data.append(item)
+
+
+        # We only need 4 books with valid images
+        if len(data) == 4:
+            break
+
+
+    # --------------------------------------------------
+    # No Recommendations Found
+    # --------------------------------------------------
+
+    if not data:
+
+        return render_template(
+            "recommend.html",
+            data=[],
+            message="Sorry, no books with available images were found."
+        )
 
 
     # --------------------------------------------------
@@ -205,7 +257,7 @@ def health():
 
 
 # --------------------------------------------------
-# Run Application Locally
+# Run Locally
 # --------------------------------------------------
 
 if __name__ == "__main__":
