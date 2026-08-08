@@ -1,762 +1,461 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookVerse | Recommendations</title>
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>
-        Recommendations | BookVerse
-    </title>
-
-
-    <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
-    >
-
-
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-    >
-
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <style>
-
-        * {
-            box-sizing: border-box;
+        :root {
+            --bg: #0e1117;
+            --sidebar: #161b22;
+            --card: #161b22;
+            --card-hover: #1d2430;
+            --border: #30363d;
+            --text: #f0f2f5;
+            --muted: #9aa4b2;
+            --accent: #00c853;
+            --accent-hover: #00e676;
+            --input: #0e1117;
+            --image-bg: #21262d;
         }
 
+        * { box-sizing: border-box; }
 
         body {
-
             margin: 0;
-
-            font-family:
-                Arial,
-                Helvetica,
-                sans-serif;
-
-            background: #f5f7fb;
+            font-family: Arial, Helvetica, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            transition: background .25s, color .25s;
         }
 
-
-        /* NAVBAR */
-
-        .navbar {
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #00a65a,
-                    #008f4c
-                );
-
-            padding:
-                16px 7%;
-
-            box-shadow:
-                0 3px 15px
-                rgba(0, 0, 0, 0.12);
+        .topbar {
+            height: 64px;
+            background: var(--sidebar);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 28px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
-
-        .navbar-brand {
-
-            color: white !important;
-
-            font-size: 25px;
-
-            font-weight: 700;
+        .brand {
+            color: var(--text);
+            text-decoration: none !important;
+            font-size: 21px;
+            font-weight: 800;
         }
 
-
-        .navbar-brand i {
-
-            margin-right: 8px;
+        .brand i {
+            color: var(--accent);
+            margin-right: 9px;
         }
 
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
         .nav-link {
-
-            color: white !important;
-
-            font-size: 16px;
-
-            margin-left: 20px;
+            color: var(--muted);
+            text-decoration: none !important;
+            padding: 9px 13px;
+            border-radius: 8px;
+            font-size: 14px;
         }
 
-
-        .nav-link:hover {
-
-            color: #d8ffe9 !important;
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--text);
+            background: #21262d;
         }
 
-
-        /* SEARCH SECTION */
-
-        .search-section {
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #00a65a,
-                    #008f4c
-                );
-
-            padding:
-                65px 20px 75px;
-
-            color: white;
-
-            text-align: center;
+        .theme-btn {
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text);
+            border-radius: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 14px;
         }
 
+        .theme-btn:hover {
+            background: #21262d;
+        }
 
-        .search-section h1 {
+        .main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 42px 28px 60px;
+        }
 
-            font-size: 45px;
+        .search-panel {
+            background: linear-gradient(135deg, #13271e, #10151d);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 38px;
+            margin-bottom: 42px;
+        }
 
+        .search-panel h1 {
+            font-size: 36px;
             font-weight: 800;
-
-            margin-bottom: 12px;
+            margin-bottom: 8px;
         }
 
-
-        .search-section p {
-
-            font-size: 18px;
-
-            opacity: 0.9;
-
-            margin-bottom: 30px;
+        .search-panel p {
+            color: var(--muted);
+            margin-bottom: 25px;
         }
-
-
-        /* SEARCH */
 
         .search-form {
-
-            max-width: 700px;
-
-            margin: auto;
-
             display: flex;
-
-            background: white;
-
-            padding: 6px;
-
-            border-radius: 50px;
-
-            box-shadow:
-                0 8px 25px
-                rgba(0, 0, 0, 0.18);
+            max-width: 780px;
+            gap: 10px;
         }
-
 
         .search-input {
-
             flex: 1;
-
-            border: none;
-
+            min-width: 0;
+            background: var(--input);
+            border: 1px solid var(--border);
+            color: var(--text);
+            border-radius: 8px;
+            padding: 13px 15px;
             outline: none;
-
-            padding:
-                15px 20px;
-
-            font-size: 16px;
-
-            border-radius: 50px;
         }
 
+        .search-input::placeholder {
+            color: #737d8b;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(0,200,83,.15);
+        }
 
         .search-button {
-
             border: none;
-
-            background: #ffb400;
-
-            color: #222;
-
-            padding:
-                12px 25px;
-
-            border-radius: 50px;
-
+            background: var(--accent);
+            color: #06140c;
+            border-radius: 8px;
+            padding: 0 20px;
             font-weight: 700;
-
             cursor: pointer;
-
-            transition: 0.2s;
         }
-
 
         .search-button:hover {
-
-            background: #ffa500;
-
-            transform:
-                scale(1.02);
+            background: var(--accent-hover);
         }
 
-
-        /* RESULTS */
-
-        .results-section {
-
-            padding-top: 50px;
-
-            padding-bottom: 30px;
-        }
-
-
-        .results-title {
-
-            font-size: 30px;
-
+        .results-heading {
+            font-size: 27px;
             font-weight: 800;
-
-            margin-bottom: 35px;
-
-            color: #222;
+            margin-bottom: 25px;
         }
-
-
-        /* BOOK CARD */
 
         .book-card {
-
-            background: white;
-
-            border-radius: 15px;
-
-            overflow: hidden;
-
             height: 100%;
-
-            border:
-                1px solid #e9ecef;
-
-            box-shadow:
-                0 5px 18px
-                rgba(0, 0, 0, 0.07);
-
-            transition:
-                all 0.25s ease;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: .2s ease;
         }
-
 
         .book-card:hover {
-
-            transform:
-                translateY(-8px);
-
-            box-shadow:
-                0 14px 30px
-                rgba(0, 0, 0, 0.14);
+            transform: translateY(-4px);
+            background: var(--card-hover);
+            border-color: #3d4652;
         }
-
-
-        /* SAME IMAGE STYLE AS HOME */
 
         .book-image-container {
-
-            width: 100%;
-
-            height: 360px;
-
-            background: #eef1f4;
-
+            height: 350px;
+            background: var(--image-bg);
             display: flex;
-
             justify-content: center;
-
             align-items: center;
-
-            padding: 12px;
+            padding: 14px;
         }
-
 
         .book-image {
-
-            display: block;
-
             width: auto;
-
             height: 100%;
-
             max-width: 100%;
-
             object-fit: contain;
-
-            border-radius: 6px;
+            display: block;
         }
-
-
-        /* DETAILS */
 
         .book-details {
-
-            padding: 18px;
+            padding: 16px;
         }
-
 
         .book-title {
-
-            color: #222;
-
-            font-size: 17px;
-
+            color: var(--text);
+            font-size: 16px;
             font-weight: 700;
-
             line-height: 1.4;
-
-            min-height: 48px;
+            min-height: 45px;
         }
-
 
         .book-author {
-
-            color: #777;
-
-            font-size: 14px;
-
-            margin-top: 10px;
+            color: var(--muted);
+            font-size: 13px;
+            margin-top: 8px;
         }
-
-
-        /* MESSAGE */
 
         .message-box {
-
-            max-width: 600px;
-
-            margin:
-                40px auto;
-
-            padding: 20px;
-
-            background: #fff3cd;
-
-            color: #856404;
-
-            border-radius: 12px;
-
-            text-align: center;
-
-            font-weight: 600;
+            padding: 15px 18px;
+            border-radius: 8px;
+            background: #2d2410;
+            border: 1px solid #5b4817;
+            color: #f0c75e;
+            margin-bottom: 25px;
         }
-
-
-        /* FOOTER */
 
         footer {
-
-            margin-top: 70px;
-
-            padding: 30px;
-
+            border-top: 1px solid var(--border);
+            background: var(--sidebar);
+            color: var(--muted);
             text-align: center;
-
-            background: #20252b;
-
-            color: #aaa;
+            padding: 24px;
+            font-size: 13px;
         }
 
+        footer strong { color: var(--text); }
 
-        footer strong {
-
-            color: white;
+        /* Light mode */
+        body.light-mode {
+            --bg: #f5f7fb;
+            --sidebar: #ffffff;
+            --card: #ffffff;
+            --card-hover: #f8fafc;
+            --border: #dfe3e8;
+            --text: #202124;
+            --muted: #6b7280;
+            --input: #ffffff;
+            --image-bg: #eef1f4;
         }
 
+        body.light-mode .search-panel {
+            background: linear-gradient(135deg, #e9fff3, #ffffff);
+        }
 
-        /* MOBILE */
+        body.light-mode .nav-link:hover,
+        body.light-mode .nav-link.active,
+        body.light-mode .theme-btn:hover {
+            background: #f1f3f5;
+        }
 
-        @media (max-width: 600px) {
+        body.light-mode .message-box {
+            background: #fff8e1;
+            border-color: #ead79a;
+            color: #795b00;
+        }
 
-            .search-section h1 {
-
-                font-size: 34px;
+        @media (max-width: 700px) {
+            .topbar {
+                padding: 0 15px;
             }
 
+            .nav-link {
+                display: none;
+            }
+
+            .main {
+                padding: 25px 15px 45px;
+            }
+
+            .search-panel {
+                padding: 28px 20px;
+            }
+
+            .search-panel h1 {
+                font-size: 29px;
+            }
 
             .search-form {
-
                 flex-direction: column;
-
-                background: transparent;
-
-                box-shadow: none;
             }
-
-
-            .search-input {
-
-                margin-bottom: 10px;
-
-                background: white;
-            }
-
 
             .search-button {
-
-                width: 100%;
+                padding: 12px;
             }
-
 
             .book-image-container {
-
                 height: 320px;
             }
-
         }
-
     </style>
-
 </head>
-
 
 <body>
 
-
-<!-- NAVBAR -->
-
-<nav class="navbar navbar-expand-lg">
-
-
-    <a
-        class="navbar-brand"
-        href="/"
-    >
-
-        <i
-            class="fa-solid fa-book-open"
-        ></i>
-
-        BookVerse
-
+<header class="topbar">
+    <a href="/" class="brand">
+        <i class="fa-solid fa-book-open"></i>BookVerse
     </a>
 
+    <nav class="nav-links">
+        <a href="/" class="nav-link">
+            <i class="fa-solid fa-house"></i> Home
+        </a>
 
-    <ul class="navbar-nav ml-auto">
+        <a href="/recommend" class="nav-link active">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Recommend
+        </a>
 
-
-        <li class="nav-item">
-
-            <a
-                class="nav-link"
-                href="/"
-            >
-
-                Home
-
-            </a>
-
-        </li>
-
-
-        <li class="nav-item">
-
-            <a
-                class="nav-link"
-                href="/recommend"
-            >
-
-                Recommend
-
-            </a>
-
-        </li>
-
-
-    </ul>
-
-
-</nav>
-
-
-<!-- SEARCH -->
-
-<section class="search-section">
-
-
-    <h1>
-
-        Find Your Next Favorite Book
-
-    </h1>
-
-
-    <p>
-
-        Enter a book you love
-        and we'll find similar books for you.
-
-    </p>
-
-
-    <form
-        action="/recommend_books"
-        method="post"
-        class="search-form"
-    >
-
-
-        <input
-
-            type="text"
-
-            name="user_input"
-
-            class="search-input"
-
-            placeholder="Enter a book name..."
-
-            autocomplete="off"
-
-            required
-
-        >
-
-
-        <button
-            type="submit"
-            class="search-button"
-        >
-
-            <i
-                class="fa-solid fa-magnifying-glass"
-            ></i>
-
-            Recommend
-
+        <button id="themeToggle" class="theme-btn">
+            ☀️ Light
         </button>
+    </nav>
+</header>
 
+<main class="main">
 
-    </form>
+    <section class="search-panel">
+        <h1>Find Your Next Favorite Book</h1>
 
+        <p>
+            Enter a book you love and get similar recommendations.
+        </p>
 
-</section>
+        <form
+            action="/recommend_books"
+            method="post"
+            class="search-form"
+        >
+            <input
+                type="text"
+                name="user_input"
+                class="search-input"
+                placeholder="Enter a book name..."
+                autocomplete="off"
+                required
+            >
 
-
-<!-- RESULTS -->
-
-<div
-    class="container results-section"
->
-
+            <button type="submit" class="search-button">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                Recommend
+            </button>
+        </form>
+    </section>
 
     {% if message %}
-
-
     <div class="message-box">
-
-
-        <i
-            class="fa-solid fa-circle-exclamation"
-        ></i>
-
-
+        <i class="fa-solid fa-circle-exclamation"></i>
         {{ message }}
-
-
     </div>
-
-
     {% endif %}
-
-
 
     {% if data %}
 
-
-    <h2 class="results-title">
-
-
-        <i
-            class="fa-solid fa-wand-magic-sparkles"
-        ></i>
-
-
-        Recommended For You
-
-
+    <h2 class="results-heading">
+        ✨ Recommended For You
     </h2>
-
-
 
     <div class="row">
 
-
         {% for i in data %}
 
-
-        <div
-            class="
-                col-xl-3
-                col-lg-3
-                col-md-4
-                col-sm-6
-                mb-4
-                book-column
-            "
-        >
-
+        <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 mb-4 book-column">
 
             <div class="book-card">
 
-
-                <!-- IMAGE -->
-
                 <div class="book-image-container">
-
-
                     <img
-
                         class="book-image"
-
                         src="{{ i[2] }}"
-
                         data-fallback="{{ i[3] or '' }}"
-
                         alt="{{ i[0] }}"
-
                         loading="lazy"
-
                     >
-
-
                 </div>
-
-
-                <!-- DETAILS -->
 
                 <div class="book-details">
 
-
                     <div class="book-title">
-
                         {{ i[0] }}
-
                     </div>
-
 
                     <div class="book-author">
-
-                        <i
-                            class="fa-solid fa-user"
-                        ></i>
-
+                        <i class="fa-solid fa-user"></i>
                         {{ i[1] }}
-
                     </div>
-
 
                 </div>
 
-
             </div>
-
 
         </div>
 
-
         {% endfor %}
-
 
     </div>
 
-
     {% endif %}
 
-
-</div>
-
-
-<!-- FOOTER -->
+</main>
 
 <footer>
-
-
     <p>
-
-        <strong>BookVerse</strong>
-
-        — Your Personal Book Recommender
-
+        <strong>BookVerse</strong> — Your Personal Book Recommender
     </p>
-
-
-    <p>
-
-        Built with Python,
-        Flask & Machine Learning
-
-    </p>
-
-
+    <p>Built with Python, Flask & Machine Learning</p>
 </footer>
 
-
-<!-- IMAGE FALLBACK -->
-
 <script>
+    // Image fallback
+    document.querySelectorAll(".book-image").forEach(function(img) {
+        img.addEventListener("error", function() {
+            const fallback = img.dataset.fallback;
 
-document
-    .querySelectorAll(".book-image")
-    .forEach(function(img) {
-
-        img.addEventListener(
-            "error",
-            function() {
-
-                const fallback =
-                    img.dataset.fallback;
-
-
-                if (
-                    fallback &&
-                    !img.dataset.fallbackTried
-                ) {
-
-                    img.dataset.fallbackTried =
-                        "true";
-
-                    img.src =
-                        fallback;
-
-                    return;
-                }
-
-
-                const column =
-                    img.closest(
-                        ".book-column"
-                    );
-
-
-                if (column) {
-
-                    column.remove();
-
-                }
-
+            if (fallback && !img.dataset.fallbackTried) {
+                img.dataset.fallbackTried = "true";
+                img.src = fallback;
+                return;
             }
-        );
 
+            const card = img.closest(".book-column");
+            if (card) card.remove();
+        });
     });
 
+    // Dark/light theme
+    const themeButton = document.getElementById("themeToggle");
+    const savedTheme = localStorage.getItem("bookverse-theme");
+
+    if (savedTheme === "light") {
+        document.body.classList.add("light-mode");
+        themeButton.textContent = "🌙 Dark";
+    }
+
+    themeButton.addEventListener("click", function() {
+        document.body.classList.toggle("light-mode");
+
+        const light =
+            document.body.classList.contains("light-mode");
+
+        localStorage.setItem(
+            "bookverse-theme",
+            light ? "light" : "dark"
+        );
+
+        themeButton.textContent =
+            light ? "🌙 Dark" : "☀️ Light";
+    });
 </script>
 
-
 </body>
-
 </html>
