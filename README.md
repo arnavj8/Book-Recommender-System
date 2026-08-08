@@ -64,7 +64,6 @@ This allows the Flask application to load the precomputed scores instead of perf
 | 🎨 HTML/CSS | Frontend interface                       |
 | ☁️ Render   | Cloud deployment                         |
 
-> **Note:** Scikit-learn is not directly used in the Flask application code. The application loads precomputed similarity scores from `similarity_scores.pkl`.
 
 ## 📁 Project Structure
 
