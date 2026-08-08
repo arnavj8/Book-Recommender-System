@@ -1,466 +1,1200 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BookVerse | Recommendations</title>
 
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        BookVerse | Recommendations
+    </title>
+
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+    >
+
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
 
     <style>
+
+        /* =====================================================
+           THEME
+        ===================================================== */
+
         :root {
+
             --bg: #0e1117;
+
             --sidebar: #161b22;
+
             --card: #161b22;
+
             --card-hover: #1d2430;
+
             --border: #30363d;
+
             --text: #f0f2f5;
+
             --muted: #9aa4b2;
+
             --accent: #00c853;
+
             --accent-hover: #00e676;
+
             --input: #0e1117;
+
             --image-bg: #21262d;
         }
 
-        * { box-sizing: border-box; }
 
-        body {
-            margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            transition: background .25s, color .25s;
-        }
-
-        .topbar {
-            height: 64px;
-            background: var(--sidebar);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 28px;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .brand {
-            color: var(--text);
-            text-decoration: none !important;
-            font-size: 21px;
-            font-weight: 800;
-        }
-
-        .brand i {
-            color: var(--accent);
-            margin-right: 9px;
-        }
-
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .nav-link {
-            color: var(--muted);
-            text-decoration: none !important;
-            padding: 9px 13px;
-            border-radius: 8px;
-            font-size: 14px;
-        }
-
-        .nav-link:hover,
-        .nav-link.active {
-            color: var(--text);
-            background: #21262d;
-        }
-
-        .theme-btn {
-            border: 1px solid var(--border);
-            background: transparent;
-            color: var(--text);
-            border-radius: 8px;
-            padding: 8px 12px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .theme-btn:hover {
-            background: #21262d;
-        }
-
-        .main {
-            width: 100%;
-            max-width: none;
-            margin: 0;
-            padding: 42px 40px 60px;
-        }
-
-        .search-panel {
-            background: linear-gradient(135deg, #13271e, #10151d);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 38px;
-            margin-bottom: 42px;
-            text-align: center;
-        }
-
-        .search-panel h1 {
-            font-size: 36px;
-            font-weight: 800;
-            margin-bottom: 8px;
-        }
-
-        .search-panel p {
-            color: var(--muted);
-            margin-bottom: 25px;
-        }
-
-        .search-form {
-            display: flex;
-            width: 100%;
-            max-width: 900px;
-            gap: 10px;
-            margin: 0 auto;
-        }
-
-        .search-input {
-            flex: 1;
-            min-width: 0;
-            background: var(--input);
-            border: 1px solid var(--border);
-            color: var(--text);
-            border-radius: 8px;
-            padding: 13px 15px;
-            outline: none;
-        }
-
-        .search-input::placeholder {
-            color: #737d8b;
-        }
-
-        .search-input:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 2px rgba(0,200,83,.15);
-        }
-
-        .search-button {
-            border: none;
-            background: var(--accent);
-            color: #06140c;
-            border-radius: 8px;
-            padding: 0 20px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        .search-button:hover {
-            background: var(--accent-hover);
-        }
-
-        .results-heading {
-            font-size: 27px;
-            font-weight: 800;
-            margin-bottom: 25px;
-        }
-
-        .book-card {
-            height: 100%;
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            overflow: hidden;
-            transition: .2s ease;
-        }
-
-        .book-card:hover {
-            transform: translateY(-4px);
-            background: var(--card-hover);
-            border-color: #3d4652;
-        }
-
-        .book-image-container {
-            height: 380px;
-            background: var(--image-bg);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 14px;
-        }
-
-        .book-image {
-            width: auto;
-            height: 100%;
-            max-width: 100%;
-            object-fit: contain;
-            display: block;
-        }
-
-        .book-details {
-            padding: 16px;
-        }
-
-        .book-title {
-            color: var(--text);
-            font-size: 16px;
-            font-weight: 700;
-            line-height: 1.4;
-            min-height: 45px;
-        }
-
-        .book-author {
-            color: var(--muted);
-            font-size: 13px;
-            margin-top: 8px;
-        }
-
-        .message-box {
-            padding: 15px 18px;
-            border-radius: 8px;
-            background: #2d2410;
-            border: 1px solid #5b4817;
-            color: #f0c75e;
-            margin-bottom: 25px;
-        }
-
-        footer {
-            border-top: 1px solid var(--border);
-            background: var(--sidebar);
-            color: var(--muted);
-            text-align: center;
-            padding: 24px;
-            font-size: 13px;
-        }
-
-        footer strong { color: var(--text); }
-
-        /* Light mode */
         body.light-mode {
+
             --bg: #f5f7fb;
-            --sidebar: #ffffff;
+
+            --sidebar: #00a65a;
+
             --card: #ffffff;
+
             --card-hover: #f8fafc;
+
             --border: #dfe3e8;
+
             --text: #202124;
+
             --muted: #6b7280;
+
+            --accent: #00a65a;
+
+            --accent-hover: #008f4c;
+
             --input: #ffffff;
+
             --image-bg: #eef1f4;
         }
 
-        body.light-mode .search-panel {
-            background: linear-gradient(135deg, #e9fff3, #ffffff);
+
+        /* =====================================================
+           GLOBAL
+        ===================================================== */
+
+        * {
+            box-sizing: border-box;
         }
+
+
+        body {
+
+            margin: 0;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background:
+                var(--bg);
+
+            color:
+                var(--text);
+
+            transition:
+                background .25s ease,
+                color .25s ease;
+        }
+
+
+        /* =====================================================
+           NAVBAR
+        ===================================================== */
+
+        .topbar {
+
+            width: 100%;
+
+            height: 64px;
+
+            background:
+                var(--sidebar);
+
+            border-bottom:
+                1px solid var(--border);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content:
+                space-between;
+
+            padding:
+                0 40px;
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 1000;
+        }
+
+
+        .brand {
+
+            color:
+                var(--text);
+
+            text-decoration:
+                none !important;
+
+            font-size: 21px;
+
+            font-weight: 800;
+        }
+
+
+        .brand i {
+
+            color:
+                var(--accent);
+
+            margin-right: 9px;
+        }
+
+
+        .nav-links {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+        }
+
+
+        .nav-link {
+
+            color:
+                var(--muted);
+
+            text-decoration:
+                none !important;
+
+            padding:
+                9px 13px;
+
+            border-radius: 8px;
+
+            font-size: 14px;
+        }
+
+
+        .nav-link:hover,
+        .nav-link.active {
+
+            color:
+                var(--text);
+
+            background:
+                rgba(255,255,255,.08);
+        }
+
+
+        /* =====================================================
+           LIGHT NAVBAR
+        ===================================================== */
+
+        body.light-mode .topbar {
+
+            background:
+                #00a65a;
+
+            border-bottom-color:
+                #008f4c;
+        }
+
+
+        body.light-mode .brand {
+
+            color: white;
+        }
+
+
+        body.light-mode .brand i {
+
+            color: white;
+        }
+
+
+        body.light-mode .nav-link {
+
+            color: white;
+        }
+
 
         body.light-mode .nav-link:hover,
-        body.light-mode .nav-link.active,
-        body.light-mode .theme-btn:hover {
-            background: #f1f3f5;
+        body.light-mode .nav-link.active {
+
+            background:
+                #008f4c;
+
+            color: white;
         }
+
+
+        /* =====================================================
+           THEME BUTTON
+        ===================================================== */
+
+        .theme-btn {
+
+            border:
+                1px solid var(--border);
+
+            background:
+                transparent;
+
+            color:
+                var(--text);
+
+            border-radius:
+                8px;
+
+            padding:
+                8px 12px;
+
+            cursor:
+                pointer;
+
+            font-size:
+                14px;
+        }
+
+
+        body.light-mode .theme-btn {
+
+            background:
+                white;
+
+            color:
+                #008f4c;
+
+            border-color:
+                white;
+        }
+
+
+        /* =====================================================
+           MAIN
+        ===================================================== */
+
+        .main {
+
+            width: 100%;
+
+            max-width: none;
+
+            margin: 0;
+
+            padding:
+                42px 40px 60px;
+        }
+
+
+        /* =====================================================
+           SEARCH PANEL
+        ===================================================== */
+
+        .search-panel {
+
+            width: 100%;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #13271e,
+                    #10151d
+                );
+
+            border:
+                1px solid var(--border);
+
+            border-radius:
+                14px;
+
+            padding:
+                55px 30px;
+
+            margin-bottom:
+                45px;
+
+            text-align:
+                center;
+        }
+
+
+        .search-panel h1 {
+
+            font-size:
+                42px;
+
+            font-weight:
+                800;
+
+            margin-bottom:
+                12px;
+        }
+
+
+        .search-panel p {
+
+            color:
+                var(--muted);
+
+            font-size:
+                17px;
+
+            margin-bottom:
+                28px;
+        }
+
+
+        /* =====================================================
+           LIGHT SEARCH PANEL
+        ===================================================== */
+
+        body.light-mode .search-panel {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #e8fff2,
+                    #ffffff
+                );
+
+            border-color:
+                #b7e8ca;
+        }
+
+
+        /* =====================================================
+           SEARCH FORM
+        ===================================================== */
+
+        .search-form {
+
+            width: 100%;
+
+            max-width:
+                850px;
+
+            margin:
+                0 auto;
+
+            display: flex;
+
+            justify-content:
+                center;
+
+            gap: 10px;
+        }
+
+
+        .search-input {
+
+            flex: 1;
+
+            min-width: 0;
+
+            background:
+                var(--input);
+
+            border:
+                1px solid var(--border);
+
+            color:
+                var(--text);
+
+            border-radius:
+                8px;
+
+            padding:
+                14px 16px;
+
+            outline: none;
+
+            font-size:
+                15px;
+        }
+
+
+        .search-input::placeholder {
+
+            color:
+                #737d8b;
+        }
+
+
+        .search-input:focus {
+
+            border-color:
+                var(--accent);
+
+            box-shadow:
+                0 0 0 2px
+                rgba(0,200,83,.15);
+        }
+
+
+        /* =====================================================
+           SEARCH BUTTON
+        ===================================================== */
+
+        .search-button {
+
+            border: none;
+
+            background:
+                var(--accent);
+
+            color: white;
+
+            border-radius:
+                8px;
+
+            padding:
+                0 22px;
+
+            font-weight:
+                700;
+
+            cursor:
+                pointer;
+
+            transition:
+                .2s;
+        }
+
+
+        .search-button:hover {
+
+            background:
+                var(--accent-hover);
+        }
+
+
+        /* =====================================================
+           RESULTS
+        ===================================================== */
+
+        .results-heading {
+
+            font-size:
+                28px;
+
+            font-weight:
+                800;
+
+            margin-bottom:
+                25px;
+        }
+
+
+        /* =====================================================
+           BOOK CARD
+        ===================================================== */
+
+        .book-card {
+
+            height: 100%;
+
+            background:
+                var(--card);
+
+            border:
+                1px solid var(--border);
+
+            border-radius:
+                12px;
+
+            overflow:
+                hidden;
+
+            transition:
+                transform .2s ease,
+                background .2s ease,
+                box-shadow .2s ease;
+        }
+
+
+        .book-card:hover {
+
+            transform:
+                translateY(-5px);
+
+            background:
+                var(--card-hover);
+
+            box-shadow:
+                0 12px 30px
+                rgba(0,0,0,.20);
+        }
+
+
+        /* =====================================================
+           IMAGE
+        ===================================================== */
+
+        .book-image-container {
+
+            width: 100%;
+
+            height: 380px;
+
+            background:
+                var(--image-bg);
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            padding: 14px;
+        }
+
+
+        .book-image {
+
+            display: block;
+
+            width: auto;
+
+            height: 100%;
+
+            max-width: 100%;
+
+            object-fit:
+                contain;
+        }
+
+
+        /* =====================================================
+           BOOK DETAILS
+        ===================================================== */
+
+        .book-details {
+
+            padding:
+                17px;
+        }
+
+
+        .book-title {
+
+            color:
+                var(--text);
+
+            font-size:
+                16px;
+
+            font-weight:
+                700;
+
+            line-height:
+                1.4;
+
+            min-height:
+                45px;
+        }
+
+
+        .book-author {
+
+            color:
+                var(--muted);
+
+            font-size:
+                13px;
+
+            margin-top:
+                8px;
+        }
+
+
+        /* =====================================================
+           MESSAGE
+        ===================================================== */
+
+        .message-box {
+
+            max-width:
+                650px;
+
+            margin:
+                0 auto 30px;
+
+            padding:
+                15px 18px;
+
+            border-radius:
+                8px;
+
+            background:
+                #2d2410;
+
+            border:
+                1px solid #5b4817;
+
+            color:
+                #f0c75e;
+
+            text-align:
+                center;
+        }
+
 
         body.light-mode .message-box {
-            background: #fff8e1;
-            border-color: #ead79a;
-            color: #795b00;
+
+            background:
+                #fff8e1;
+
+            border-color:
+                #ead79a;
+
+            color:
+                #795b00;
         }
+
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        footer {
+
+            width: 100%;
+
+            border-top:
+                1px solid var(--border);
+
+            background:
+                var(--sidebar);
+
+            color:
+                var(--muted);
+
+            text-align:
+                center;
+
+            padding:
+                25px;
+
+            font-size:
+                13px;
+        }
+
+
+        footer strong {
+
+            color:
+                var(--text);
+        }
+
+
+        body.light-mode footer {
+
+            background:
+                #008f4c;
+
+            color:
+                rgba(255,255,255,.85);
+
+            border-top-color:
+                #007b42;
+        }
+
+
+        body.light-mode footer strong {
+
+            color:
+                white;
+        }
+
+
+        /* =====================================================
+           MOBILE
+        ===================================================== */
 
         @media (max-width: 700px) {
+
             .topbar {
-                padding: 0 15px;
+
+                padding:
+                    0 15px;
             }
+
 
             .nav-link {
-                display: none;
+
+                display:
+                    none;
             }
+
 
             .main {
-                width: 100%;
-                padding: 25px 15px 45px;
+
+                padding:
+                    25px 15px 45px;
             }
+
 
             .search-panel {
-                padding: 28px 20px;
+
+                padding:
+                    40px 20px;
             }
+
 
             .search-panel h1 {
-                font-size: 29px;
+
+                font-size:
+                    30px;
             }
+
 
             .search-form {
-                flex-direction: column;
+
+                flex-direction:
+                    column;
             }
+
 
             .search-button {
-                padding: 12px;
+
+                padding:
+                    13px;
             }
 
+
             .book-image-container {
-                height: 320px;
+
+                height:
+                    320px;
             }
+
         }
+
     </style>
+
 </head>
+
 
 <body>
 
+
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
+
 <header class="topbar">
-    <a href="/" class="brand">
-        <i class="fa-solid fa-book-open"></i>BookVerse
+
+
+    <a
+        href="/"
+        class="brand"
+    >
+
+        <i class="fa-solid fa-book-open"></i>
+
+        BookVerse
+
     </a>
 
+
     <nav class="nav-links">
-        <a href="/" class="nav-link">
-            <i class="fa-solid fa-house"></i> Home
+
+
+        <a
+            href="/"
+            class="nav-link"
+        >
+
+            <i class="fa-solid fa-house"></i>
+
+            Home
+
         </a>
 
-        <a href="/recommend" class="nav-link active">
-            <i class="fa-solid fa-wand-magic-sparkles"></i> Recommend
+
+        <a
+            href="/recommend"
+            class="nav-link active"
+        >
+
+            <i
+                class="fa-solid fa-wand-magic-sparkles"
+            ></i>
+
+            Recommend
+
         </a>
 
-        <button id="themeToggle" class="theme-btn">
+
+        <button
+            id="themeToggle"
+            class="theme-btn"
+        >
+
             ☀️ Light
+
         </button>
+
+
     </nav>
+
 </header>
+
+
+<!-- =====================================================
+     MAIN
+===================================================== -->
 
 <main class="main">
 
+
+    <!-- SEARCH -->
+
     <section class="search-panel">
-        <h1>Find Your Next Favorite Book</h1>
+
+
+        <h1>
+
+            Find Your Next Favorite Book
+
+        </h1>
+
 
         <p>
-            Enter a book you love and get similar recommendations.
+
+            Enter a book you love and get
+            similar recommendations.
+
         </p>
+
 
         <form
             action="/recommend_books"
             method="post"
             class="search-form"
         >
+
+
             <input
+
                 type="text"
+
                 name="user_input"
+
                 class="search-input"
+
                 placeholder="Enter a book name..."
+
                 autocomplete="off"
+
                 required
+
             >
 
-            <button type="submit" class="search-button">
-                <i class="fa-solid fa-magnifying-glass"></i>
+
+            <button
+                type="submit"
+                class="search-button"
+            >
+
+                <i
+                    class="fa-solid fa-magnifying-glass"
+                ></i>
+
                 Recommend
+
             </button>
+
+
         </form>
+
+
     </section>
 
+
+    <!-- MESSAGE -->
+
     {% if message %}
+
+
     <div class="message-box">
-        <i class="fa-solid fa-circle-exclamation"></i>
+
+
+        <i
+            class="fa-solid fa-circle-exclamation"
+        ></i>
+
+
         {{ message }}
+
+
     </div>
+
+
     {% endif %}
+
+
+    <!-- RESULTS -->
 
     {% if data %}
 
+
     <h2 class="results-heading">
+
         ✨ Recommended For You
+
     </h2>
+
 
     <div class="row">
 
+
         {% for i in data %}
 
-        <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 mb-4 book-column">
+
+        <div
+            class="
+                col-xl-3
+                col-lg-3
+                col-md-4
+                col-sm-6
+                mb-4
+                book-column
+            "
+        >
+
 
             <div class="book-card">
 
+
                 <div class="book-image-container">
+
+
                     <img
+
                         class="book-image"
+
                         src="{{ i[2] }}"
+
                         data-fallback="{{ i[3] or '' }}"
+
                         alt="{{ i[0] }}"
+
                         loading="lazy"
+
                     >
+
+
                 </div>
+
 
                 <div class="book-details">
 
+
                     <div class="book-title">
+
                         {{ i[0] }}
+
                     </div>
 
+
                     <div class="book-author">
-                        <i class="fa-solid fa-user"></i>
+
+                        <i
+                            class="fa-solid fa-user"
+                        ></i>
+
                         {{ i[1] }}
+
                     </div>
+
 
                 </div>
 
+
             </div>
+
 
         </div>
 
+
         {% endfor %}
+
 
     </div>
 
+
     {% endif %}
+
 
 </main>
 
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
 <footer>
+
+
     <p>
-        <strong>BookVerse</strong> — Your Personal Book Recommender
+
+        <strong>BookVerse</strong>
+
+        — Your Personal Book Recommender
+
     </p>
-    <p>Built with Python, Flask & Machine Learning</p>
+
+
+    <p>
+
+        Built with Python, Flask & Machine Learning
+
+    </p>
+
+
 </footer>
 
+
 <script>
-    // Image fallback
-    document.querySelectorAll(".book-image").forEach(function(img) {
-        img.addEventListener("error", function() {
-            const fallback = img.dataset.fallback;
 
-            if (fallback && !img.dataset.fallbackTried) {
-                img.dataset.fallbackTried = "true";
-                img.src = fallback;
-                return;
-            }
+    /* =====================================================
+       IMAGE FALLBACK
+    ===================================================== */
 
-            const card = img.closest(".book-column");
-            if (card) card.remove();
+    document
+        .querySelectorAll(".book-image")
+        .forEach(function(img) {
+
+            img.addEventListener(
+                "error",
+                function() {
+
+                    const fallback =
+                        img.dataset.fallback;
+
+
+                    if (
+                        fallback &&
+                        !img.dataset.fallbackTried
+                    ) {
+
+                        img.dataset.fallbackTried =
+                            "true";
+
+                        img.src =
+                            fallback;
+
+                        return;
+
+                    }
+
+
+                    const card =
+                        img.closest(
+                            ".book-column"
+                        );
+
+
+                    if (card) {
+
+                        card.remove();
+
+                    }
+
+                }
+            );
+
         });
-    });
 
-    // Dark/light theme
-    const themeButton = document.getElementById("themeToggle");
-    const savedTheme = localStorage.getItem("bookverse-theme");
+
+    /* =====================================================
+       THEME
+    ===================================================== */
+
+    const themeButton =
+        document.getElementById(
+            "themeToggle"
+        );
+
+
+    const savedTheme =
+        localStorage.getItem(
+            "bookverse-theme"
+        );
+
 
     if (savedTheme === "light") {
-        document.body.classList.add("light-mode");
-        themeButton.textContent = "🌙 Dark";
-    }
 
-    themeButton.addEventListener("click", function() {
-        document.body.classList.toggle("light-mode");
-
-        const light =
-            document.body.classList.contains("light-mode");
-
-        localStorage.setItem(
-            "bookverse-theme",
-            light ? "light" : "dark"
+        document.body.classList.add(
+            "light-mode"
         );
 
         themeButton.textContent =
-            light ? "🌙 Dark" : "☀️ Light";
-    });
+            "🌙 Dark";
+
+    }
+
+
+    themeButton.addEventListener(
+        "click",
+        function() {
+
+            document.body.classList.toggle(
+                "light-mode"
+            );
+
+
+            const isLight =
+                document.body.classList.contains(
+                    "light-mode"
+                );
+
+
+            localStorage.setItem(
+                "bookverse-theme",
+                isLight
+                    ? "light"
+                    : "dark"
+            );
+
+
+            themeButton.textContent =
+                isLight
+                    ? "🌙 Dark"
+                    : "☀️ Light";
+
+        }
+    );
+
 </script>
 
+
 </body>
+
 </html>
