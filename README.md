@@ -1,56 +1,70 @@
 # 📚 BookVerse — Book Recommendation System
 
-BookVerse is a **web-based book recommendation system** built with **Python and Flask** that helps users discover books based on their interests.
+**BookVerse** is a Flask-based web application that helps users discover books through a **Collaborative Filtering-based recommendation system**.
 
-The system uses **Collaborative Filtering** to identify books similar to a user's selected book and provides personalized recommendations along with book covers and author information.
+The application uses preprocessed book data and similarity scores to recommend books similar to the one selected by the user. BookVerse is designed with a simple and responsive interface and is **deployed on Render** for online access.
+
+## 🌐 Live Demo
+
+🚀 **BookVerse:**
+https://bookverse-6r4q.onrender.com/
+
+> Note: Since the application is hosted on Render's free tier, the first request may take a few seconds if the service has been inactive.
 
 ## ✨ Features
 
-* 📖 **Popular Books** — Displays highly rated and frequently reviewed books.
-* 🤖 **Personalized Recommendations** — Recommends books similar to the book selected by the user.
-* 🔍 **Book Search** — Users can enter a book title to find recommendations.
-* ⭐ **Ratings & Reviews** — Displays average ratings and number of ratings for popular books.
-* 🖼️ **Book Cover Integration** — Uses available dataset images with Open Library as a fallback for missing covers.
-* ⚡ **Fast Recommendations** — Precomputed similarity scores are used for efficient recommendations.
-* 🌐 **Simple Web Interface** — Clean and responsive Flask-based interface.
-* ❤️ **Reader-Friendly Experience** — Designed to make discovering new books simple and intuitive.
+* 📖 **Popular Books** — Displays popular books based on ratings and number of ratings.
+* 🤖 **Book Recommendations** — Recommends similar books based on the selected book.
+* 🔍 **Book Search** — Search for a book by entering its title.
+* ⭐ **Ratings Information** — Displays average ratings and number of ratings.
+* 🖼️ **Book Covers** — Displays book cover images from the available book data.
+* ⚡ **Fast Recommendations** — Uses precomputed similarity scores instead of calculating them for every request.
+* 🌐 **Flask Web Application** — Provides a lightweight and interactive web interface.
+* ☁️ **Render Deployment** — The application is deployed and accessible online.
 
 ## 🧠 Recommendation System
 
-BookVerse uses a **Collaborative Filtering** approach.
+BookVerse uses a **Collaborative Filtering approach** with precomputed similarity scores.
 
-The recommendation pipeline works as follows:
+The recommendation process works as follows:
 
 ```text
-User selects a book
+User enters a book title
         ↓
-Find matching book in dataset
+Search for the matching book
         ↓
-Retrieve similarity scores
+Find the book's index
         ↓
-Rank similar books
+Retrieve precomputed similarity scores
         ↓
-Select top recommendations
+Sort books by similarity
         ↓
-Display book title, author & cover
+Select top similar books
+        ↓
+Display recommendations
 ```
 
-The project stores preprocessed recommendation data and similarity matrices using Python pickle files, allowing recommendations to be generated without retraining the model every time the application starts.
+The similarity scores are stored in:
+
+```text
+similarity_scores.pkl
+```
+
+This allows the Flask application to load the precomputed scores instead of performing the similarity calculation every time a user requests recommendations.
 
 ## 🛠️ Tech Stack
 
-| Technology      | Purpose                                              |
-| --------------- | ---------------------------------------------------- |
-| 🐍 Python       | Core programming language                            |
-| 🌐 Flask        | Web application framework                            |
-| 📊 Pandas       | Data manipulation                                    |
-| 🔢 NumPy        | Numerical computations                               |
-| 🤖 Scikit-learn | Recommendation/modeling utilities                    |
-| 🎨 HTML/CSS     | Frontend interface                                   |
-| 📦 Pickle       | Storing processed datasets and recommendation models |
-| 📚 Open Library | Book-cover fallback                                  |
+| Technology  | Purpose                                  |
+| ----------- | ---------------------------------------- |
+| 🐍 Python   | Core programming language                |
+| 🌐 Flask    | Backend web framework                    |
+| 📊 Pandas   | Data handling and DataFrame operations   |
+| 🔢 NumPy    | Numerical operations                     |
+| 📦 Pickle   | Loading preprocessed recommendation data |
+| 🎨 HTML/CSS | Frontend interface                       |
+| ☁️ Render   | Cloud deployment                         |
 
-The current repository includes Flask, NumPy, Pandas, Gunicorn, and Scikit-learn as its main Python dependencies.
+> **Note:** Scikit-learn is not directly used in the Flask application code. The application loads precomputed similarity scores from `similarity_scores.pkl`.
 
 ## 📁 Project Structure
 
@@ -67,18 +81,27 @@ BookVerse/
 │   ├── popular.pkl
 │   ├── pt.pkl
 │   ├── similarity_scores.pkl
-│   ├── requirements.txt
-│   └── __init__.py
+│   └── requirements.txt
 │
 ├── .gitignore
-├── .gitattributes
-├── .python-version
+├── README.md
 └── LICENSE
 ```
 
-The recommendation data files include `books.pkl`, `popular.pkl`, `pt.pkl`, and `similarity_scores.pkl`.
+### Important Files
 
-## 🚀 Getting Started
+| File                    | Description                        |
+| ----------------------- | ---------------------------------- |
+| `app.py`                | Main Flask application             |
+| `popular.pkl`           | Preprocessed popular-book data     |
+| `books.pkl`             | Book metadata                      |
+| `pt.pkl`                | Processed book matrix              |
+| `similarity_scores.pkl` | Precomputed book similarity scores |
+| `index.html`            | Home page                          |
+| `recommend.html`        | Recommendation page                |
+| `requirements.txt`      | Python dependencies                |
+
+## 🚀 Run Locally
 
 ### 1. Clone the Repository
 
@@ -98,130 +121,172 @@ cd BookVerse/pythonProject1
 python -m venv .venv
 ```
 
-Activate it on Windows:
+### 4. Activate the Virtual Environment
+
+**Windows:**
 
 ```bash
 .venv\Scripts\activate
 ```
 
-For macOS/Linux:
+**macOS/Linux:**
 
 ```bash
 source .venv/bin/activate
 ```
 
-### 4. Install Dependencies
+### 5. Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 5. Run the Application
+### 6. Run Flask
 
 ```bash
 python app.py
 ```
 
-The Flask application runs on:
+The application will be available at:
+
+```text
+http://127.0.0.1:5000
+```
+
+or:
 
 ```text
 http://localhost:5000
 ```
 
-## 📖 How It Works
+## ☁️ Deployment on Render
 
-### Popular Books
+BookVerse is deployed using **Render**.
 
-The home page loads preprocessed popular-book data and displays information such as:
+The deployment process is:
+
+```text
+GitHub Repository
+        ↓
+      Render
+        ↓
+Install dependencies
+        ↓
+Start Flask application
+        ↓
+Live Web Application
+```
+
+### Render Configuration
+
+A typical Render configuration for the project is:
+
+**Build Command**
+
+```bash
+pip install -r requirements.txt
+```
+
+**Start Command**
+
+```bash
+gunicorn app:app
+```
+
+If the Render service uses `pythonProject1` as its root directory, the command can be configured according to that directory structure.
+
+## 🔄 How Recommendations Work
+
+When a user submits a book title:
+
+1. The input is converted to lowercase.
+2. BookVerse searches the processed book index for a matching title.
+3. The corresponding index is retrieved.
+4. Precomputed similarity scores are accessed.
+5. Books are sorted according to their similarity score.
+6. The top four similar books are selected.
+7. Book title, author, and cover information are displayed.
+
+If the entered book cannot be found, the application displays:
+
+```text
+Book not found!
+```
+
+If no book name is entered:
+
+```text
+Please enter a book name!
+```
+
+## 📊 Preprocessed Data
+
+BookVerse uses preprocessed `.pkl` files to improve recommendation speed.
+
+### `popular.pkl`
+
+Contains information about popular books, including:
 
 * Book title
 * Author
-* Average rating
 * Number of ratings
+* Average rating
 * Book cover
 
-The application filters out books for which no usable cover image is available.
+### `books.pkl`
 
-### Book Recommendations
+Contains book metadata used to retrieve information about recommended books.
 
-When a user enters a book title:
+### `pt.pkl`
 
-1. BookVerse searches for the matching title.
-2. The corresponding position in the recommendation matrix is identified.
-3. Similarity scores are retrieved.
-4. Books are sorted according to similarity.
-5. The top four books with available covers are selected.
-6. Recommended books are displayed with their title, author, and cover.
+Contains the processed book matrix used to locate books within the recommendation system.
 
-### 🖼️ Image Handling
+### `similarity_scores.pkl`
 
-BookVerse uses a two-level image strategy:
-
-```text
-Book ISBN
-   ↓
-Open Library Cover
-   ↓
-If unavailable
-   ↓
-Dataset Cover
-```
-
-The application validates image URLs, converts HTTP URLs to HTTPS, removes invalid/placeholder images, and generates Open Library cover URLs using ISBNs.
-
-## 📊 Dataset
-
-The project uses book information containing attributes such as:
-
-* Book title
-* Book author
-* ISBN
-* Book cover URLs
-* Rating information
-
-The processed datasets and recommendation artifacts are stored as `.pkl` files and loaded when the Flask application starts.
+Contains precomputed similarity scores used to identify books that are most similar to the selected book.
 
 ## 🔗 Application Routes
 
-| Route              | Description                            |
-| ------------------ | -------------------------------------- |
-| `/`                | Home page with popular books           |
-| `/recommend`       | Recommendation interface               |
-| `/recommend_books` | Processes book recommendation requests |
-| `/health`          | Application health check               |
+| Route              | Method | Description                            |
+| ------------------ | ------ | -------------------------------------- |
+| `/`                | GET    | Displays popular books                 |
+| `/recommend`       | GET    | Opens the recommendation page          |
+| `/recommend_books` | POST   | Processes book recommendation requests |
 
 ## 🎯 Project Objective
 
-The main objective of BookVerse is to build an intelligent recommendation platform that helps users discover books they are likely to enjoy without manually browsing through thousands of titles.
+The objective of BookVerse is to provide users with a simple platform for discovering books based on their reading interests.
 
-By combining **machine learning, similarity-based recommendations, and a web interface**, BookVerse provides a simple and interactive book-discovery experience.
+Instead of manually browsing through a large collection of books, users can enter a book they like and receive similar book recommendations.
 
 ## 🔮 Future Improvements
 
-* 👤 User authentication and personalized profiles
-* ⭐ User rating and review system
-* 🧠 Hybrid recommendation system
-* 🔎 Advanced search and filtering
+* 👤 User accounts and personalized recommendations
+* ⭐ User ratings and reviews
+* ❤️ Wishlist and favorite books
+* 🔎 Advanced book search
 * 📚 Genre-based recommendations
-* ❤️ Wishlist and favorites
+* 🧠 Hybrid recommendation system
+* 🤖 AI-powered natural language recommendations
+* 🗄️ Database integration
 * 📈 Recommendation analytics
-* ☁️ Cloud deployment
-* 🗄️ Database integration instead of local pickle files
-* 🤖 AI-powered natural-language book recommendations
+* 📱 Improved mobile responsiveness
 
-## 💡 Learning Outcomes
+## 📚 Learning Outcomes
 
-Through this project, I gained practical experience in:
+This project provided practical experience in:
 
 * Building recommendation systems
 * Collaborative Filtering
-* Similarity-based recommendation
-* Data preprocessing with Pandas
-* Model/data serialization using Pickle
+* Similarity-based recommendations
+* Data preprocessing
+* Pandas and NumPy
+* Pickle-based data serialization
 * Flask web development
-* Integrating external image sources
-* Designing a machine-learning-powered web application
-* Deploying Python applications using production-ready tools such as Gunicorn
+* HTML/CSS frontend development
+* Deploying Python applications on Render
+* Managing Python dependencies with `requirements.txt`
+* Using Git and GitHub for version control
 
 ## 👨‍💻 Author
 
@@ -229,7 +294,8 @@ Through this project, I gained practical experience in:
 
 B.Tech — Artificial Intelligence & Data Science
 
-GitHub: [arnavj8](https://github.com/arnavj8)
+GitHub:
+https://github.com/arnavj8
 
 ## 📄 License
 
@@ -237,5 +303,4 @@ This project is licensed under the **MIT License**.
 
 ---
 
-⭐ If you found this project useful, consider giving the repository a star!
-
+⭐ If you found BookVerse useful, consider giving the repository a star!
