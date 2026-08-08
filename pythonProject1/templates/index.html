@@ -1,421 +1,1068 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
     <title>BookVerse | Home</title>
 
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- Bootstrap -->
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+    >
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
 
     <style>
+
+        /* =====================================================
+           THEME VARIABLES
+        ===================================================== */
+
         :root {
+
+            /* Dark mode */
+
             --bg: #0e1117;
+
             --sidebar: #161b22;
+
             --card: #161b22;
+
             --card-hover: #1d2430;
+
             --border: #30363d;
+
             --text: #f0f2f5;
+
             --muted: #9aa4b2;
+
             --accent: #00c853;
+
             --accent-hover: #00e676;
+
             --input: #0e1117;
+
             --image-bg: #21262d;
         }
 
-        * { box-sizing: border-box; }
 
-        body {
-            margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            transition: background .25s, color .25s;
-        }
+        /* =====================================================
+           LIGHT MODE
+        ===================================================== */
 
-        /* Streamlit-style top/sidebar navigation */
-        .topbar {
-            height: 64px;
-            background: var(--sidebar);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 28px;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .brand {
-            color: var(--text);
-            text-decoration: none !important;
-            font-size: 21px;
-            font-weight: 800;
-        }
-
-        .brand i {
-            color: var(--accent);
-            margin-right: 9px;
-        }
-
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .nav-link {
-            color: var(--muted);
-            text-decoration: none !important;
-            padding: 9px 13px;
-            border-radius: 8px;
-            font-size: 14px;
-        }
-
-        .nav-link:hover,
-        .nav-link.active {
-            color: var(--text);
-            background: #21262d;
-        }
-
-        .theme-btn {
-            border: 1px solid var(--border);
-            background: transparent;
-            color: var(--text);
-            border-radius: 8px;
-            padding: 8px 12px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .theme-btn:hover {
-            background: #21262d;
-        }
-
-        .main {
-            width: 100%;
-            max-width: none;
-            margin: 0;
-            padding: 42px 40px 60px;
-        }
-
-        .hero {
-            background: linear-gradient(135deg, #13271e, #10151d);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 48px 38px;
-            margin-bottom: 42px;
-            text-align: center;
-        }
-
-        .hero h1 {
-            font-size: 42px;
-            font-weight: 800;
-            margin-bottom: 12px;
-        }
-
-        .hero p {
-            color: var(--muted);
-            font-size: 17px;
-            margin-bottom: 25px;
-        }
-
-        .primary-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 9px;
-            background: var(--accent);
-            color: #06140c;
-            padding: 11px 17px;
-            border-radius: 8px;
-            font-weight: 700;
-            text-decoration: none !important;
-            border: none;
-        }
-
-        .primary-btn:hover {
-            background: var(--accent-hover);
-            color: #06140c;
-        }
-
-        .section-heading {
-            margin-bottom: 25px;
-        }
-
-        .section-heading h2 {
-            font-size: 27px;
-            font-weight: 800;
-            margin-bottom: 5px;
-        }
-
-        .section-heading p {
-            color: var(--muted);
-            margin: 0;
-        }
-
-        .book-card {
-            height: 100%;
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            overflow: hidden;
-            transition: .2s ease;
-        }
-
-        .book-card:hover {
-            transform: translateY(-4px);
-            background: var(--card-hover);
-            border-color: #3d4652;
-        }
-
-        .book-image-container {
-            height: 380px;
-            background: var(--image-bg);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 14px;
-        }
-
-        .book-image {
-            width: auto;
-            height: 100%;
-            max-width: 100%;
-            object-fit: contain;
-            display: block;
-        }
-
-        .book-details {
-            padding: 16px;
-        }
-
-        .book-title {
-            color: var(--text);
-            font-size: 16px;
-            font-weight: 700;
-            line-height: 1.4;
-            min-height: 45px;
-        }
-
-        .book-author {
-            color: var(--muted);
-            font-size: 13px;
-            margin-top: 8px;
-            margin-bottom: 13px;
-        }
-
-        .book-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: var(--muted);
-            font-size: 12px;
-        }
-
-        .rating {
-            color: #ffc107;
-            font-weight: 700;
-        }
-
-        footer {
-            border-top: 1px solid var(--border);
-            background: var(--sidebar);
-            color: var(--muted);
-            text-align: center;
-            padding: 24px;
-            font-size: 13px;
-        }
-
-        footer strong { color: var(--text); }
-
-        /* Light mode */
         body.light-mode {
+
             --bg: #f5f7fb;
-            --sidebar: #ffffff;
+
+            --sidebar: #00a65a;
+
             --card: #ffffff;
+
             --card-hover: #f8fafc;
+
             --border: #dfe3e8;
+
             --text: #202124;
+
             --muted: #6b7280;
+
+            --accent: #00a65a;
+
+            --accent-hover: #008f4c;
+
             --input: #ffffff;
+
             --image-bg: #eef1f4;
         }
 
-        body.light-mode .hero {
-            background: linear-gradient(135deg, #e9fff3, #ffffff);
+
+        /* =====================================================
+           GLOBAL
+        ===================================================== */
+
+        * {
+            box-sizing: border-box;
         }
+
+
+        body {
+
+            margin: 0;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background: var(--bg);
+
+            color: var(--text);
+
+            transition:
+                background .25s ease,
+                color .25s ease;
+        }
+
+
+        /* =====================================================
+           NAVBAR
+        ===================================================== */
+
+        .topbar {
+
+            width: 100%;
+
+            height: 64px;
+
+            background: var(--sidebar);
+
+            border-bottom:
+                1px solid var(--border);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding:
+                0 40px;
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 1000;
+        }
+
+
+        .brand {
+
+            color: var(--text);
+
+            text-decoration: none !important;
+
+            font-size: 21px;
+
+            font-weight: 800;
+        }
+
+
+        .brand i {
+
+            color: var(--accent);
+
+            margin-right: 9px;
+        }
+
+
+        .nav-links {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+        }
+
+
+        .nav-link {
+
+            color: var(--muted);
+
+            text-decoration: none !important;
+
+            padding:
+                9px 13px;
+
+            border-radius: 8px;
+
+            font-size: 14px;
+        }
+
+
+        .nav-link:hover,
+        .nav-link.active {
+
+            color: var(--text);
+
+            background:
+                rgba(255,255,255,0.08);
+        }
+
+
+        /* =====================================================
+           LIGHT MODE NAVBAR
+        ===================================================== */
+
+        body.light-mode .topbar {
+
+            background: #00a65a;
+
+            border-bottom-color:
+                #008f4c;
+        }
+
+
+        body.light-mode .brand {
+
+            color: white;
+        }
+
+
+        body.light-mode .brand i {
+
+            color: white;
+        }
+
+
+        body.light-mode .nav-link {
+
+            color: white;
+        }
+
 
         body.light-mode .nav-link:hover,
-        body.light-mode .nav-link.active,
-        body.light-mode .theme-btn:hover {
-            background: #f1f3f5;
+        body.light-mode .nav-link.active {
+
+            background: #008f4c;
+
+            color: white;
         }
 
+
+        /* =====================================================
+           THEME BUTTON
+        ===================================================== */
+
+        .theme-btn {
+
+            border:
+                1px solid var(--border);
+
+            background: transparent;
+
+            color: var(--text);
+
+            border-radius: 8px;
+
+            padding:
+                8px 12px;
+
+            cursor: pointer;
+
+            font-size: 14px;
+        }
+
+
+        .theme-btn:hover {
+
+            background:
+                rgba(255,255,255,0.08);
+        }
+
+
+        body.light-mode .theme-btn {
+
+            background: white;
+
+            color: #008f4c;
+
+            border-color: white;
+        }
+
+
+        /* =====================================================
+           MAIN
+        ===================================================== */
+
+        .main {
+
+            width: 100%;
+
+            max-width: none;
+
+            margin: 0;
+
+            padding:
+                42px 40px 60px;
+        }
+
+
+        /* =====================================================
+           HERO
+        ===================================================== */
+
+        .hero {
+
+            width: 100%;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #13271e,
+                    #10151d
+                );
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 14px;
+
+            padding:
+                60px 30px;
+
+            margin-bottom: 45px;
+
+            text-align: center;
+        }
+
+
+        .hero h1 {
+
+            font-size: 46px;
+
+            font-weight: 800;
+
+            margin-bottom: 15px;
+        }
+
+
+        .hero p {
+
+            color: var(--muted);
+
+            font-size: 18px;
+
+            margin-bottom: 28px;
+        }
+
+
+        /* =====================================================
+           LIGHT HERO
+        ===================================================== */
+
+        body.light-mode .hero {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #e8fff2,
+                    #ffffff
+                );
+
+            border-color:
+                #b7e8ca;
+        }
+
+
+        /* =====================================================
+           BUTTON
+        ===================================================== */
+
+        .primary-btn {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 9px;
+
+            background:
+                var(--accent);
+
+            color: white;
+
+            padding:
+                12px 20px;
+
+            border-radius: 8px;
+
+            font-weight: 700;
+
+            text-decoration: none !important;
+
+            border: none;
+
+            transition:
+                background .2s,
+                transform .2s;
+        }
+
+
+        .primary-btn:hover {
+
+            background:
+                var(--accent-hover);
+
+            color: white;
+
+            transform:
+                translateY(-2px);
+        }
+
+
+        /* =====================================================
+           SECTION
+        ===================================================== */
+
+        .section-heading {
+
+            margin-bottom: 25px;
+        }
+
+
+        .section-heading h2 {
+
+            font-size: 28px;
+
+            font-weight: 800;
+
+            margin-bottom: 5px;
+        }
+
+
+        .section-heading p {
+
+            color: var(--muted);
+
+            margin: 0;
+        }
+
+
+        /* =====================================================
+           BOOK CARD
+        ===================================================== */
+
+        .book-card {
+
+            height: 100%;
+
+            background:
+                var(--card);
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 12px;
+
+            overflow: hidden;
+
+            transition:
+                transform .2s ease,
+                background .2s ease,
+                box-shadow .2s ease;
+        }
+
+
+        .book-card:hover {
+
+            transform:
+                translateY(-5px);
+
+            background:
+                var(--card-hover);
+
+            box-shadow:
+                0 12px 30px
+                rgba(0,0,0,.20);
+        }
+
+
+        /* =====================================================
+           IMAGE
+        ===================================================== */
+
+        .book-image-container {
+
+            width: 100%;
+
+            height: 380px;
+
+            background:
+                var(--image-bg);
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            padding: 14px;
+        }
+
+
+        .book-image {
+
+            display: block;
+
+            width: auto;
+
+            height: 100%;
+
+            max-width: 100%;
+
+            object-fit: contain;
+
+            border-radius: 5px;
+        }
+
+
+        /* =====================================================
+           BOOK DETAILS
+        ===================================================== */
+
+        .book-details {
+
+            padding: 17px;
+        }
+
+
+        .book-title {
+
+            color: var(--text);
+
+            font-size: 16px;
+
+            font-weight: 700;
+
+            line-height: 1.4;
+
+            min-height: 45px;
+        }
+
+
+        .book-author {
+
+            color: var(--muted);
+
+            font-size: 13px;
+
+            margin-top: 8px;
+
+            margin-bottom: 13px;
+        }
+
+
+        .book-meta {
+
+            display: flex;
+
+            justify-content:
+                space-between;
+
+            align-items: center;
+
+            color: var(--muted);
+
+            font-size: 12px;
+        }
+
+
+        .rating {
+
+            color: #ffc107;
+
+            font-weight: 700;
+        }
+
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        footer {
+
+            width: 100%;
+
+            border-top:
+                1px solid var(--border);
+
+            background:
+                var(--sidebar);
+
+            color:
+                var(--muted);
+
+            text-align: center;
+
+            padding: 25px;
+
+            font-size: 13px;
+        }
+
+
+        footer strong {
+
+            color: var(--text);
+        }
+
+
+        body.light-mode footer {
+
+            background: #008f4c;
+
+            color: rgba(255,255,255,.85);
+
+            border-top-color:
+                #007b42;
+        }
+
+
+        body.light-mode footer strong {
+
+            color: white;
+        }
+
+
+        /* =====================================================
+           MOBILE
+        ===================================================== */
+
         @media (max-width: 768px) {
+
             .topbar {
-                padding: 0 15px;
+
+                padding:
+                    0 15px;
             }
 
+
             .nav-link {
+
                 display: none;
             }
 
+
             .main {
-                width: 100%;
-                padding: 25px 15px 45px;
+
+                padding:
+                    25px 15px 45px;
             }
+
 
             .hero {
-                padding: 32px 22px;
+
+                padding:
+                    40px 20px;
             }
+
 
             .hero h1 {
-                font-size: 31px;
+
+                font-size: 32px;
             }
 
+
+            .hero p {
+
+                font-size: 16px;
+            }
+
+
             .book-image-container {
+
                 height: 320px;
             }
+
         }
+
     </style>
+
 </head>
+
 
 <body>
 
+
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
+
 <header class="topbar">
-    <a href="/" class="brand">
-        <i class="fa-solid fa-book-open"></i>BookVerse
+
+
+    <a
+        href="/"
+        class="brand"
+    >
+
+        <i class="fa-solid fa-book-open"></i>
+
+        BookVerse
+
     </a>
 
+
     <nav class="nav-links">
-        <a href="/" class="nav-link active">
-            <i class="fa-solid fa-house"></i> Home
+
+
+        <a
+            href="/"
+            class="nav-link active"
+        >
+
+            <i class="fa-solid fa-house"></i>
+
+            Home
+
         </a>
 
-        <a href="/recommend" class="nav-link">
-            <i class="fa-solid fa-wand-magic-sparkles"></i> Recommend
+
+        <a
+            href="/recommend"
+            class="nav-link"
+        >
+
+            <i
+                class="fa-solid fa-wand-magic-sparkles"
+            ></i>
+
+            Recommend
+
         </a>
 
-        <button id="themeToggle" class="theme-btn">
+
+        <button
+            id="themeToggle"
+            class="theme-btn"
+        >
+
             ☀️ Light
+
         </button>
+
+
     </nav>
+
 </header>
+
+
+<!-- =====================================================
+     MAIN
+===================================================== -->
 
 <main class="main">
 
+
+    <!-- HERO -->
+
     <section class="hero">
-        <h1>Discover Your Next Great Read</h1>
+
+
+        <h1>
+
+            Discover Your Next Great Read
+
+        </h1>
+
+
         <p>
-            Explore popular books and discover something
-            new to add to your reading list.
+
+            Explore popular books and discover
+            something new to add to your reading list.
+
         </p>
 
-        <a href="/recommend" class="primary-btn">
-            <i class="fa-solid fa-wand-magic-sparkles"></i>
+
+        <a
+            href="/recommend"
+            class="primary-btn"
+        >
+
+            <i
+                class="fa-solid fa-wand-magic-sparkles"
+            ></i>
+
             Get Recommendations
+
         </a>
+
+
     </section>
 
+
+    <!-- SECTION -->
+
     <div class="section-heading">
-        <h2>📚 Popular Books</h2>
-        <p>Popular books from our recommendation dataset.</p>
+
+
+        <h2>
+
+            📚 Popular Books
+
+        </h2>
+
+
+        <p>
+
+            Popular books from our recommendation dataset.
+
+        </p>
+
+
     </div>
+
+
+    <!-- BOOK GRID -->
 
     <div class="row">
+
+
         {% for i in range(book_name|length) %}
-        <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 mb-4 book-column">
+
+
+        <div
+            class="
+                col-xl-3
+                col-lg-3
+                col-md-4
+                col-sm-6
+                mb-4
+                book-column
+            "
+        >
+
+
             <div class="book-card">
 
+
                 <div class="book-image-container">
+
+
                     <img
+
                         class="book-image"
+
                         src="{{ image[i][0] }}"
+
                         data-fallback="{{ image[i][1] or '' }}"
+
                         alt="{{ book_name[i] }}"
+
                         loading="lazy"
+
                     >
+
+
                 </div>
+
 
                 <div class="book-details">
+
+
                     <div class="book-title">
+
                         {{ book_name[i] }}
+
                     </div>
+
 
                     <div class="book-author">
-                        <i class="fa-solid fa-user"></i>
+
+                        <i
+                            class="fa-solid fa-user"
+                        ></i>
+
                         {{ author[i] }}
+
                     </div>
+
 
                     <div class="book-meta">
+
+
                         <span class="rating">
-                            <i class="fa-solid fa-star"></i>
+
+                            <i
+                                class="fa-solid fa-star"
+                            ></i>
+
                             {{ rating[i] }}
+
                         </span>
+
 
                         <span>
+
                             {{ votes[i] }} votes
+
                         </span>
+
+
                     </div>
+
+
                 </div>
 
+
             </div>
+
+
         </div>
+
+
         {% endfor %}
+
+
     </div>
+
+
 </main>
 
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
 <footer>
+
+
     <p>
-        <strong>BookVerse</strong> — Your Personal Book Recommender
+
+        <strong>BookVerse</strong>
+
+        — Your Personal Book Recommender
+
     </p>
-    <p>Built with Python, Flask & Machine Learning</p>
+
+
+    <p>
+
+        Built with Python, Flask & Machine Learning
+
+    </p>
+
+
 </footer>
 
+
 <script>
-    // Image fallback
-    document.querySelectorAll(".book-image").forEach(function(img) {
-        img.addEventListener("error", function() {
-            const fallback = img.dataset.fallback;
 
-            if (fallback && !img.dataset.fallbackTried) {
-                img.dataset.fallbackTried = "true";
-                img.src = fallback;
-                return;
-            }
+    /* =====================================================
+       IMAGE FALLBACK
+    ===================================================== */
 
-            const card = img.closest(".book-column");
-            if (card) card.remove();
+    document
+        .querySelectorAll(".book-image")
+        .forEach(function(img) {
+
+            img.addEventListener(
+                "error",
+                function() {
+
+                    const fallback =
+                        img.dataset.fallback;
+
+
+                    if (
+                        fallback &&
+                        !img.dataset.fallbackTried
+                    ) {
+
+                        img.dataset.fallbackTried =
+                            "true";
+
+                        img.src =
+                            fallback;
+
+                        return;
+
+                    }
+
+
+                    const card =
+                        img.closest(
+                            ".book-column"
+                        );
+
+
+                    if (card) {
+
+                        card.remove();
+
+                    }
+
+                }
+            );
+
         });
-    });
 
-    // Dark/light theme
-    const themeButton = document.getElementById("themeToggle");
-    const savedTheme = localStorage.getItem("bookverse-theme");
+
+    /* =====================================================
+       THEME
+    ===================================================== */
+
+    const themeButton =
+        document.getElementById(
+            "themeToggle"
+        );
+
+
+    const savedTheme =
+        localStorage.getItem(
+            "bookverse-theme"
+        );
+
 
     if (savedTheme === "light") {
-        document.body.classList.add("light-mode");
-        themeButton.textContent = "🌙 Dark";
-    }
 
-    themeButton.addEventListener("click", function() {
-        document.body.classList.toggle("light-mode");
-
-        const light =
-            document.body.classList.contains("light-mode");
-
-        localStorage.setItem(
-            "bookverse-theme",
-            light ? "light" : "dark"
+        document.body.classList.add(
+            "light-mode"
         );
 
         themeButton.textContent =
-            light ? "🌙 Dark" : "☀️ Light";
-    });
+            "🌙 Dark";
+
+    }
+
+
+    themeButton.addEventListener(
+        "click",
+        function() {
+
+            document.body.classList.toggle(
+                "light-mode"
+            );
+
+
+            const isLight =
+                document.body.classList.contains(
+                    "light-mode"
+                );
+
+
+            localStorage.setItem(
+                "bookverse-theme",
+                isLight
+                    ? "light"
+                    : "dark"
+            );
+
+
+            themeButton.textContent =
+                isLight
+                    ? "🌙 Dark"
+                    : "☀️ Light";
+
+        }
+    );
+
 </script>
 
+
 </body>
+
 </html>
