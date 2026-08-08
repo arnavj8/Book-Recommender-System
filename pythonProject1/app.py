@@ -3,410 +3,280 @@ import pickle
 import numpy as np
 from pathlib import Path
 from urllib.parse import urlparse
-
-
-# =========================================================
-# Flask Application
-# =========================================================
+import re
 
 app = Flask(__name__)
 
 BASE_DIR = Path(__file__).resolve().parent
 
-
-# =========================================================
-# Load Pickle Files
-# =========================================================
-
-popular_df = pickle.load(
-    open(BASE_DIR / "popular.pkl", "rb")
-)
-
-pt = pickle.load(
-    open(BASE_DIR / "pt.pkl", "rb")
-)
-
-books = pickle.load(
-    open(BASE_DIR / "books.pkl", "rb")
-)
-
-similarity_scores = pickle.load(
-    open(BASE_DIR / "similarity_scores.pkl", "rb")
-)
+# ---------------------------------------------------------
+# Load preprocessed data
+# ---------------------------------------------------------
+popular_df = pickle.load(open(BASE_DIR / "popular.pkl", "rb"))
+pt = pickle.load(open(BASE_DIR / "pt.pkl", "rb"))
+books = pickle.load(open(BASE_DIR / "books.pkl", "rb"))
+similarity_scores = pickle.load(open(BASE_DIR / "similarity_scores.pkl", "rb"))
 
 
-# =========================================================
-# IMAGE FUNCTIONS
-# =========================================================
-
-def get_image_column(df):
-    """
-    Select the highest-quality image column available.
-    """
-
-    if "Image-URL-L" in df.columns:
-        return "Image-URL-L"
-
-    if "Image-URL-M" in df.columns:
-        return "Image-URL-M"
-
-    if "Image-URL-S" in df.columns:
-        return "Image-URL-S"
-
-    return None
-
-
+# ---------------------------------------------------------
+# Image helpers
+# ---------------------------------------------------------
 def clean_image_url(url):
-    """
-    Validate and clean book image URLs.
-    """
-
+    """Return a usable HTTPS image URL or None."""
     if url is None:
         return None
 
     url = str(url).strip()
 
-    if not url:
+    if not url or url.lower() in {"nan", "none", "null"}:
         return None
 
-    if url.lower() in ["nan", "none", "null"]:
-        return None
-
-    # Remove common placeholder images
-    invalid_words = [
+    invalid_words = (
         "nopic",
         "no_image",
         "no-image",
         "noimage",
         "placeholder",
         "default-image",
-        "default_image"
-    ]
+        "default_image",
+    )
 
-    url_lower = url.lower()
+    lower_url = url.lower()
+    if any(word in lower_url for word in invalid_words):
+        return None
 
-    for word in invalid_words:
-        if word in url_lower:
-            return None
-
-    # Convert HTTP → HTTPS
     if url.startswith("http://"):
         url = "https://" + url[7:]
 
-    # Validate URL
     parsed = urlparse(url)
-
-    if parsed.scheme not in ["http", "https"]:
-        return None
-
-    if not parsed.netloc:
+    if parsed.scheme not in {"http", "https"} or not parsed.netloc:
         return None
 
     return url
 
 
-# =========================================================
-# IMAGE COLUMN FOR BOOK DATASET
-# =========================================================
-
-BOOK_IMAGE_COLUMN = get_image_column(books)
-
-if BOOK_IMAGE_COLUMN:
-
-    books["clean_image"] = (
-        books[BOOK_IMAGE_COLUMN]
-        .apply(clean_image_url)
-    )
-
-else:
-
-    books["clean_image"] = None
-
-
-# =========================================================
-# REMOVE BOOKS WITHOUT VALID IMAGES
-# =========================================================
-
-books = books[
-    books["clean_image"].notna()
-].copy()
-
-
-# =========================================================
-# CREATE BOOK IMAGE LOOKUP
-# =========================================================
-
-def get_best_image(title):
-    """
-    Get the best available image for a book.
-
-    Images are always taken from books.pkl so that
-    homepage and recommendation page use the same
-    image source.
-    """
-
-    temp_df = books[
-        books["Book-Title"] == title
-    ]
-
-    if temp_df.empty:
+def normalize_isbn(isbn):
+    """Keep only ISBN digits and X."""
+    if isbn is None:
         return None
 
-    for _, row in temp_df.iterrows():
+    value = re.sub(r"[^0-9Xx]", "", str(isbn)).upper()
 
-        image = row["clean_image"]
-
-        if image:
-            return image
+    if len(value) in (10, 13):
+        return value
 
     return None
 
 
-# =========================================================
-# HOME PAGE
-# =========================================================
+def dataset_image(row):
+    """Use the largest available image from the Book-Crossing data."""
+    for column in ("Image-URL-L", "Image-URL-M", "Image-URL-S"):
+        if column in row.index:
+            image = clean_image_url(row[column])
+            if image:
+                return image
 
+    return None
+
+
+def openlibrary_image(row):
+    """
+    Prefer Open Library's large cover when an ISBN is available.
+    Open Library documents S/M/L cover sizes and supports ISBN-based
+    cover URLs.
+    """
+    if "ISBN" not in row.index:
+        return None
+
+    isbn = normalize_isbn(row["ISBN"])
+
+    if not isbn:
+        return None
+
+    return f"https://covers.openlibrary.org/b/isbn/{isbn}-L.jpg?default=false"
+
+
+def get_image_pair(row):
+    """
+    Return (primary, fallback).
+
+    Primary: Open Library large cover when ISBN exists.
+    Fallback: original Book-Crossing large/medium/small URL.
+    """
+    fallback = dataset_image(row)
+    primary = openlibrary_image(row)
+
+    if primary:
+        return primary, fallback
+
+    if fallback:
+        return fallback, None
+
+    return None, None
+
+
+# ---------------------------------------------------------
+# Build a fast title -> image lookup from books.pkl
+# ---------------------------------------------------------
+books = books.copy()
+
+book_image_lookup = {}
+
+for _, row in books.iterrows():
+    title = row.get("Book-Title")
+
+    if not title or str(title).strip() == "":
+        continue
+
+    primary, fallback = get_image_pair(row)
+
+    if primary:
+        # Keep the first valid cover found for a title.
+        book_image_lookup.setdefault(
+            str(title),
+            (primary, fallback)
+        )
+
+
+def get_best_image(title):
+    return book_image_lookup.get(str(title))
+
+
+# ---------------------------------------------------------
+# Home page
+# ---------------------------------------------------------
 @app.route("/")
 def index():
-
     book_name = []
     author = []
-    image = []
+    images = []
     votes = []
     rating = []
 
+    # Keep the popular-book ordering from popular.pkl.
     for _, row in popular_df.iterrows():
-
         title = row["Book-Title"]
+        image_pair = get_best_image(title)
 
-        # Get image from books.pkl
-        best_image = get_best_image(title)
-
-        # Skip books without valid images
-        if not best_image:
+        # Do not display books for which we have no cover.
+        if not image_pair:
             continue
 
         book_name.append(title)
-
-        author.append(
-            row["Book-Author"]
-        )
-
-        image.append(
-            best_image
-        )
-
-        votes.append(
-            row["num_ratings"]
-        )
-
-        rating.append(
-            row["avg_rating"]
-        )
+        author.append(row["Book-Author"])
+        images.append(image_pair)
+        votes.append(row["num_ratings"])
+        rating.append(row["avg_rating"])
 
     return render_template(
         "index.html",
         book_name=book_name,
         author=author,
-        image=image,
+        images=images,
         votes=votes,
-        rating=rating
+        rating=rating,
     )
 
 
-# =========================================================
-# RECOMMENDATION PAGE
-# =========================================================
-
+# ---------------------------------------------------------
+# Recommendation page
+# ---------------------------------------------------------
 @app.route("/recommend")
 def recommend_ui():
-
-    return render_template(
-        "recommend.html"
-    )
+    return render_template("recommend.html")
 
 
-# =========================================================
-# RECOMMEND BOOKS
-# =========================================================
-
-@app.route(
-    "/recommend_books",
-    methods=["POST"]
-)
+# ---------------------------------------------------------
+# Recommendation endpoint
+# ---------------------------------------------------------
+@app.route("/recommend_books", methods=["POST"])
 def recommend():
-
-    user_input = request.form.get(
-        "user_input",
-        ""
-    ).strip().lower()
-
-
-    # -----------------------------------------------------
-    # Empty Input
-    # -----------------------------------------------------
+    user_input = request.form.get("user_input", "").strip().lower()
 
     if not user_input:
-
         return render_template(
             "recommend.html",
             data=[],
-            message="Please enter a book name!"
+            message="Please enter a book name!",
         )
-
-
-    # -----------------------------------------------------
-    # Find Matching Book
-    # -----------------------------------------------------
 
     match = None
 
     for book in pt.index:
-
-        if user_input in book.lower():
-
+        if user_input in str(book).lower():
             match = book
             break
 
-
-    # -----------------------------------------------------
-    # Book Not Found
-    # -----------------------------------------------------
-
     if match is None:
-
         return render_template(
             "recommend.html",
             data=[],
-            message=(
-                "Book not found! "
-                "Please try another book name."
-            )
+            message="Book not found! Please try another book name.",
         )
 
-
-    # -----------------------------------------------------
-    # Find Similar Books
-    # -----------------------------------------------------
-
-    index = np.where(
-        pt.index == match
-    )[0][0]
-
+    index = np.where(pt.index == match)[0][0]
 
     similar_items = sorted(
-        list(
-            enumerate(
-                similarity_scores[index]
-            )
-        ),
+        enumerate(similarity_scores[index]),
         key=lambda x: x[1],
-        reverse=True
+        reverse=True,
     )
-
-
-    # -----------------------------------------------------
-    # Prepare Recommendations
-    # -----------------------------------------------------
 
     data = []
 
+    for item_index, _score in similar_items[1:]:
+        recommended_title = pt.index[item_index]
+        image_pair = get_best_image(recommended_title)
 
-    for i in similar_items[1:]:
-
-        recommended_title = pt.index[i[0]]
-
+        # Skip books without a usable cover.
+        if not image_pair:
+            continue
 
         temp_df = books[
-            books["Book-Title"] ==
-            recommended_title
-        ]
-
+            books["Book-Title"] == recommended_title
+        ].drop_duplicates("Book-Title")
 
         if temp_df.empty:
             continue
-
-
-        temp_df = temp_df.drop_duplicates(
-            "Book-Title"
-        )
-
-
-        if temp_df.empty:
-            continue
-
 
         row = temp_df.iloc[0]
-
-
-        image_url = row["clean_image"]
-
-
-        # Skip invalid image
-        if not image_url:
-            continue
-
 
         data.append(
             [
                 row["Book-Title"],
                 row["Book-Author"],
-                image_url
+                image_pair[0],  # primary
+                image_pair[1],  # fallback
             ]
         )
 
-
-        # Return only 4 valid books
         if len(data) == 4:
             break
 
-
-    # -----------------------------------------------------
-    # No Recommendations
-    # -----------------------------------------------------
-
     if not data:
-
         return render_template(
             "recommend.html",
             data=[],
-            message=(
-                "No recommendations with "
-                "available book covers were found."
-            )
+            message="No recommendations with available book covers were found.",
         )
 
-
-    # -----------------------------------------------------
-    # Render Results
-    # -----------------------------------------------------
-
-    return render_template(
-        "recommend.html",
-        data=data
-    )
+    return render_template("recommend.html", data=data)
 
 
-# =========================================================
-# HEALTH CHECK
-# =========================================================
-
+# ---------------------------------------------------------
+# Health check
+# ---------------------------------------------------------
 @app.route("/health")
 def health():
-
-    return (
-        "Book Recommender is running successfully!"
-    )
+    return "Book Recommender is running successfully!"
 
 
-# =========================================================
-# RUN APPLICATION
-# =========================================================
-
+# ---------------------------------------------------------
+# Local development
+# ---------------------------------------------------------
 if __name__ == "__main__":
-
     app.run(
         host="0.0.0.0",
         port=5000,
-        debug=True
+        debug=True,
     )
