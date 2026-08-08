@@ -1,7 +1,8 @@
-from flask import Flask, render_template, request
+ffrom flask import Flask, render_template, request
 import pickle
 import numpy as np
 from pathlib import Path
+from urllib.parse import urlparse
 
 # --------------------------------------------------
 # Flask Application
@@ -13,7 +14,7 @@ BASE_DIR = Path(__file__).resolve().parent
 
 
 # --------------------------------------------------
-# Load Preprocessed Data
+# Load Data
 # --------------------------------------------------
 
 popular_df = pickle.load(
@@ -34,41 +35,120 @@ similarity_scores = pickle.load(
 
 
 # --------------------------------------------------
-# Select Best Image Column
+# Image Helper Functions
 # --------------------------------------------------
 
-if "Image-URL-L" in popular_df.columns:
-    POPULAR_IMAGE_COLUMN = "Image-URL-L"
+def clean_image_url(url):
+    """
+    Convert HTTP image URLs to HTTPS.
+    This is important because Render uses HTTPS.
+    """
+
+    if url is None:
+        return None
+
+    url = str(url).strip()
+
+    if not url:
+        return None
+
+    if url.lower() in ["nan", "none", "null"]:
+        return None
+
+    # Remove common placeholder images
+    invalid_words = [
+        "nopic",
+        "no_image",
+        "no-image",
+        "noimage",
+        "placeholder",
+        "default-image",
+        "default_image"
+    ]
+
+    url_lower = url.lower()
+
+    for word in invalid_words:
+        if word in url_lower:
+            return None
+
+    # Make HTTP images HTTPS
+    if url.startswith("http://"):
+        url = "https://" + url[7:]
+
+    # Validate URL
+    parsed = urlparse(url)
+
+    if parsed.scheme not in ["http", "https"]:
+        return None
+
+    if not parsed.netloc:
+        return None
+
+    return url
+
+
+def get_image_column(df):
+    """
+    Prefer large images for better quality.
+    """
+
+    if "Image-URL-L" in df.columns:
+        return "Image-URL-L"
+
+    if "Image-URL-M" in df.columns:
+        return "Image-URL-M"
+
+    if "Image-URL-S" in df.columns:
+        return "Image-URL-S"
+
+    return None
+
+
+# --------------------------------------------------
+# Clean Popular Books
+# --------------------------------------------------
+
+POPULAR_IMAGE_COLUMN = get_image_column(popular_df)
+
+if POPULAR_IMAGE_COLUMN:
+
+    popular_df["clean_image"] = (
+        popular_df[POPULAR_IMAGE_COLUMN]
+        .apply(clean_image_url)
+    )
+
+    # Remove books without valid images
+    popular_df = popular_df[
+        popular_df["clean_image"].notna()
+    ].copy()
+
 else:
-    POPULAR_IMAGE_COLUMN = "Image-URL-M"
+
+    popular_df["clean_image"] = None
 
 
-if "Image-URL-L" in books.columns:
-    BOOK_IMAGE_COLUMN = "Image-URL-L"
+# --------------------------------------------------
+# Clean Books Dataset
+# --------------------------------------------------
+
+BOOK_IMAGE_COLUMN = get_image_column(books)
+
+if BOOK_IMAGE_COLUMN:
+
+    books["clean_image"] = (
+        books[BOOK_IMAGE_COLUMN]
+        .apply(clean_image_url)
+    )
+
+    # Remove books without valid images
+    books = books[
+        books["clean_image"].notna()
+    ].copy()
+
 else:
-    BOOK_IMAGE_COLUMN = "Image-URL-M"
 
-
-# --------------------------------------------------
-# Remove Books Without Images
-# --------------------------------------------------
-
-popular_df = popular_df[
-    popular_df[POPULAR_IMAGE_COLUMN].notna()
-]
-
-popular_df = popular_df[
-    popular_df[POPULAR_IMAGE_COLUMN].astype(str).str.strip() != ""
-]
-
-
-books = books[
-    books[BOOK_IMAGE_COLUMN].notna()
-]
-
-books = books[
-    books[BOOK_IMAGE_COLUMN].astype(str).str.strip() != ""
-]
+    books["clean_image"] = None
 
 
 # --------------------------------------------------
@@ -81,15 +161,25 @@ def index():
     return render_template(
         "index.html",
 
-        book_name=popular_df["Book-Title"].tolist(),
+        book_name=popular_df[
+            "Book-Title"
+        ].tolist(),
 
-        author=popular_df["Book-Author"].tolist(),
+        author=popular_df[
+            "Book-Author"
+        ].tolist(),
 
-        image=popular_df[POPULAR_IMAGE_COLUMN].tolist(),
+        image=popular_df[
+            "clean_image"
+        ].tolist(),
 
-        votes=popular_df["num_ratings"].tolist(),
+        votes=popular_df[
+            "num_ratings"
+        ].tolist(),
 
-        rating=popular_df["avg_rating"].tolist()
+        rating=popular_df[
+            "avg_rating"
+        ].tolist()
     )
 
 
@@ -106,7 +196,7 @@ def recommend_ui():
 
 
 # --------------------------------------------------
-# Book Recommendation
+# Recommendation Algorithm
 # --------------------------------------------------
 
 @app.route("/recommend_books", methods=["POST"])
@@ -117,6 +207,7 @@ def recommend():
         ""
     ).strip().lower()
 
+    # Empty input
     if not user_input:
 
         return render_template(
@@ -140,12 +231,13 @@ def recommend():
             break
 
 
+    # Book not found
     if match is None:
 
         return render_template(
             "recommend.html",
             data=[],
-            message="Book not found! Please try another book name."
+            message="Book not found! Please try another book."
         )
 
 
@@ -175,13 +267,20 @@ def recommend():
 
     data = []
 
+
     for i in similar_items[1:]:
 
         recommended_title = pt.index[i[0]]
 
+
         temp_df = books[
             books["Book-Title"] == recommended_title
         ]
+
+
+        if temp_df.empty:
+            continue
+
 
         temp_df = temp_df.drop_duplicates(
             "Book-Title"
@@ -192,39 +291,38 @@ def recommend():
             continue
 
 
-        # Get image
-        image_url = temp_df.iloc[0][BOOK_IMAGE_COLUMN]
+        row = temp_df.iloc[0]
 
 
-        # Skip books without an image
-        if (
-            image_url is None
-            or str(image_url).strip() == ""
-            or str(image_url).lower() == "nan"
-        ):
+        image_url = row["clean_image"]
+
+
+        # Skip invalid images
+        if not image_url:
             continue
 
 
         item = [
 
-            temp_df.iloc[0]["Book-Title"],
+            row["Book-Title"],
 
-            temp_df.iloc[0]["Book-Author"],
+            row["Book-Author"],
 
             image_url
 
         ]
 
+
         data.append(item)
 
 
-        # We only need 4 books with valid images
+        # Only 4 valid recommendations
         if len(data) == 4:
             break
 
 
     # --------------------------------------------------
-    # No Recommendations Found
+    # No Valid Recommendations
     # --------------------------------------------------
 
     if not data:
@@ -232,13 +330,9 @@ def recommend():
         return render_template(
             "recommend.html",
             data=[],
-            message="Sorry, no books with available images were found."
+            message="No recommendations with available book covers were found."
         )
 
-
-    # --------------------------------------------------
-    # Display Recommendations
-    # --------------------------------------------------
 
     return render_template(
         "recommend.html",
