@@ -5,163 +5,348 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>My Book Recommender</title>
+    <title>BookVerse | Book Recommender</title>
 
-    <!-- Bootstrap -->
     <link
         rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
     >
 
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
     <style>
-        body {
-            background-color: #343a40;
+
+        * {
+            box-sizing: border-box;
         }
 
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f7fb;
+            color: #222;
+        }
+
+        /* Navbar */
+
         .navbar {
-            padding: 15px 30px;
+            background: linear-gradient(135deg, #00a65a, #008f4c);
+            padding: 16px 7%;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.12);
         }
 
         .navbar-brand {
             color: white !important;
-            font-size: 24px;
-            font-weight: bold;
+            font-size: 25px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .navbar-brand i {
+            margin-right: 8px;
         }
 
         .nav-link {
             color: white !important;
-            margin-left: 15px;
+            font-size: 16px;
+            margin-left: 20px;
+            transition: 0.2s;
         }
 
-        .page-title {
+        .nav-link:hover {
+            color: #d8ffe9 !important;
+        }
+
+        /* Hero */
+
+        .hero {
+            padding: 70px 20px 50px;
+            text-align: center;
+            background:
+                linear-gradient(
+                    rgba(0, 166, 90, 0.94),
+                    rgba(0, 143, 76, 0.94)
+                );
             color: white;
-            font-size: 50px;
-            font-weight: bold;
-            margin-top: 50px;
         }
 
-        .card {
-            background-color: #454d55;
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            font-size: 19px;
+            opacity: 0.9;
+            margin-bottom: 28px;
+        }
+
+        .recommend-btn {
+            background: white;
+            color: #009653;
             border: none;
-            border-radius: 10px;
-            height: 100%;
+            padding: 13px 28px;
+            border-radius: 30px;
+            font-weight: 700;
+            text-decoration: none !important;
+            transition: 0.25s;
+        }
+
+        .recommend-btn:hover {
+            color: #007d47;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Section */
+
+        .section-title {
+            margin-top: 50px;
+            margin-bottom: 10px;
+            font-size: 32px;
+            font-weight: 800;
+            color: #222;
+        }
+
+        .section-subtitle {
+            color: #777;
+            margin-bottom: 35px;
+        }
+
+        /* Book Card */
+
+        .book-card {
+            background: white;
+            border-radius: 15px;
             overflow: hidden;
-            transition: transform 0.2s;
+            height: 100%;
+            border: 1px solid #e9ecef;
+            box-shadow: 0 5px 18px rgba(0, 0, 0, 0.07);
+            transition: all 0.25s ease;
         }
 
-        .card:hover {
-            transform: translateY(-5px);
+        .book-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 14px 30px rgba(0, 0, 0, 0.14);
         }
 
-        .card-img-top {
+        .book-image-container {
             width: 100%;
-            height: 320px;
-            object-fit: cover;
-        }
-
-        .card-body {
+            height: 310px;
+            background: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             padding: 15px;
         }
 
+        .book-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 6px;
+        }
+
+        .book-details {
+            padding: 18px;
+        }
+
         .book-title {
-            color: white;
-            font-size: 18px;
-            font-weight: bold;
-            margin-top: 10px;
+            font-size: 17px;
+            font-weight: 700;
+            color: #222;
+            line-height: 1.4;
+            min-height: 48px;
+            margin-bottom: 8px;
         }
 
         .book-author {
-            color: #dddddd;
-            font-size: 16px;
+            color: #777;
+            font-size: 14px;
+            margin-bottom: 15px;
         }
 
-        .book-info {
-            color: #ffc107;
-            font-size: 15px;
-            margin-bottom: 5px;
+        .book-meta {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
         }
+
+        .rating {
+            color: #f4a900;
+            font-weight: 700;
+        }
+
+        .votes {
+            color: #777;
+            font-size: 13px;
+        }
+
+        /* Footer */
+
+        footer {
+            margin-top: 70px;
+            padding: 30px;
+            text-align: center;
+            background: #20252b;
+            color: #aaa;
+        }
+
+        footer strong {
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+
+            .hero h1 {
+                font-size: 36px;
+            }
+
+            .hero p {
+                font-size: 16px;
+            }
+
+            .navbar {
+                padding: 15px 20px;
+            }
+
+            .nav-link {
+                margin-left: 0;
+            }
+
+        }
+
     </style>
+
 </head>
 
 <body>
 
+
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg" style="background-color:#00a65a">
+
+<nav class="navbar navbar-expand-lg">
 
     <a class="navbar-brand" href="/">
-        My Book Recommender
+        <i class="fa-solid fa-book-open"></i>
+        BookVerse
     </a>
 
-    <ul class="navbar-nav ml-auto">
+    <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarMenu"
+    >
+        <span class="navbar-toggler-icon"></span>
+    </button>
 
-        <li class="nav-item">
-            <a class="nav-link" href="/">
-                Home
-            </a>
-        </li>
+    <div class="collapse navbar-collapse" id="navbarMenu">
 
-        <li class="nav-item">
-            <a class="nav-link" href="/recommend">
-                Recommend
-            </a>
-        </li>
+        <ul class="navbar-nav ml-auto">
 
-        <li class="nav-item">
-            <a class="nav-link" href="#">
-                Contact
-            </a>
-        </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/">
+                    Home
+                </a>
+            </li>
 
-    </ul>
+            <li class="nav-item">
+                <a class="nav-link" href="/recommend">
+                    Recommend
+                </a>
+            </li>
+
+        </ul>
+
+    </div>
 
 </nav>
 
 
-<!-- Main Content -->
+<!-- Hero -->
+
+<section class="hero">
+
+    <h1>Discover Your Next Great Read</h1>
+
+    <p>
+        Explore popular books and find personalized recommendations.
+    </p>
+
+    <a href="/recommend" class="recommend-btn">
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+        Get Recommendations
+    </a>
+
+</section>
+
+
+<!-- Books -->
+
 <div class="container">
+
+    <div class="text-center">
+
+        <h2 class="section-title">
+            Popular Books
+        </h2>
+
+        <p class="section-subtitle">
+            Explore some of the most popular books loved by readers.
+        </p>
+
+    </div>
+
 
     <div class="row">
 
-        <div class="col-md-12">
-
-            <h1 class="page-title">
-                Top 50 Books
-            </h1>
-
-        </div>
-
-
-        <!-- Books -->
         {% for i in range(book_name|length) %}
 
-        <div class="col-lg-3 col-md-4 col-sm-6"
-             style="margin-top:40px">
+        <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 mb-4">
 
-            <div class="card">
+            <div class="book-card">
 
-                <img
-                    class="card-img-top"
-                    src="{{ image[i] }}"
-                    alt="{{ book_name[i] }}"
-                >
+                <div class="book-image-container">
 
-                <div class="card-body">
+                    <img
+                        class="book-image"
+                        src="{{ image[i] }}"
+                        alt="{{ book_name[i] }}"
+                        loading="lazy"
+                        onerror="this.src='https://via.placeholder.com/300x400?text=No+Image'"
+                    >
 
-                    <p class="book-title">
+                </div>
+
+
+                <div class="book-details">
+
+                    <div class="book-title">
                         {{ book_name[i] }}
-                    </p>
+                    </div>
 
-                    <p class="book-author">
+                    <div class="book-author">
+                        <i class="fa-solid fa-user"></i>
                         {{ author[i] }}
-                    </p>
+                    </div>
 
-                    <p class="book-info">
-                        Votes: {{ votes[i] }}
-                    </p>
+                    <div class="book-meta">
 
-                    <p class="book-info">
-                        Rating: {{ rating[i] }}
-                    </p>
+                        <span class="rating">
+                            <i class="fa-solid fa-star"></i>
+                            {{ rating[i] }}
+                        </span>
+
+                        <span class="votes">
+                            {{ votes[i] }} votes
+                        </span>
+
+                    </div>
 
                 </div>
 
@@ -172,6 +357,35 @@
         {% endfor %}
 
     </div>
+
+</div>
+
+
+<!-- Footer -->
+
+<footer>
+
+    <p>
+        <strong>BookVerse</strong> — Your Personal Book Recommender
+    </p>
+
+    <p>
+        Built with Python, Flask & Machine Learning
+    </p>
+
+</footer>
+
+
+<script
+    src="https://code.jquery.com/jquery-3.6.0.min.js">
+</script>
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js">
+</script>
+
+</body>
+</html>
 
 </div>
 
