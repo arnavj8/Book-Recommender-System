@@ -380,7 +380,27 @@ body.light-mode footer strong { color: white; }
     .search-button { padding: 13px; }
     .book-image-container { height: 320px; }
 }
-</style>
+
+        /* Light mode: clearly visible dark-green action button */
+        body.light-mode .primary-btn {
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 9px !important;
+            background: #006b38 !important;
+            color: #ffffff !important;
+            padding: 12px 20px !important;
+            border: none !important;
+            border-radius: 8px !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.22) !important;
+        }
+
+        body.light-mode .primary-btn:hover {
+            background: #004f29 !important;
+            color: #ffffff !important;
+        }
+
+    </style>
 </head>
 
 <body>
