@@ -2,99 +2,244 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Recommend Books</title>
+    <title>Book Recommendations | BookVerse</title>
 
-    <!-- Bootstrap -->
     <link
         rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
     >
 
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
     <style>
-        body {
-            background-color: #343a40;
+
+        * {
+            box-sizing: border-box;
         }
 
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f7fb;
+        }
+
+        /* Navbar */
+
         .navbar {
-            padding: 15px 30px;
+            background: linear-gradient(135deg, #00a65a, #008f4c);
+            padding: 16px 7%;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.12);
         }
 
         .navbar-brand {
             color: white !important;
-            font-size: 24px;
-            font-weight: bold;
+            font-size: 25px;
+            font-weight: 700;
+        }
+
+        .navbar-brand i {
+            margin-right: 8px;
         }
 
         .nav-link {
             color: white !important;
-            margin-left: 15px;
+            margin-left: 20px;
         }
 
-        .page-title {
+        /* Search Hero */
+
+        .search-section {
+            background: linear-gradient(
+                135deg,
+                #00a65a,
+                #008f4c
+            );
+
+            padding: 65px 20px 75px;
             color: white;
-            font-size: 50px;
-            font-weight: bold;
-            margin-top: 50px;
+            text-align: center;
         }
 
-        .search-box {
-            margin-top: 25px;
+        .search-section h1 {
+            font-size: 45px;
+            font-weight: 800;
+            margin-bottom: 12px;
         }
 
-        .card {
-            background-color: #454d55;
+        .search-section p {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .search-form {
+            max-width: 700px;
+            margin: auto;
+            display: flex;
+            background: white;
+            padding: 6px;
+            border-radius: 50px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.18);
+        }
+
+        .search-input {
+            flex: 1;
             border: none;
-            border-radius: 10px;
-            height: 100%;
+            outline: none;
+            padding: 15px 20px;
+            font-size: 16px;
+            border-radius: 50px;
+        }
+
+        .search-button {
+            border: none;
+            background: #ffb400;
+            color: #222;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .search-button:hover {
+            background: #ffa500;
+        }
+
+        /* Results */
+
+        .results-section {
+            padding-top: 50px;
+        }
+
+        .results-title {
+            font-size: 30px;
+            font-weight: 800;
+            margin-bottom: 35px;
+            color: #222;
+        }
+
+        /* Cards */
+
+        .book-card {
+            background: white;
+            border-radius: 15px;
             overflow: hidden;
-            transition: transform 0.2s;
+            height: 100%;
+            border: 1px solid #e9ecef;
+            box-shadow: 0 5px 18px rgba(0, 0, 0, 0.07);
+            transition: all 0.25s ease;
         }
 
-        .card:hover {
-            transform: translateY(-5px);
+        .book-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 14px 30px rgba(0, 0, 0, 0.14);
         }
 
-        .card-img-top {
+        .book-image-container {
             width: 100%;
             height: 320px;
-            object-fit: cover;
-        }
-
-        .card-body {
+            background: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             padding: 15px;
         }
 
+        .book-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 6px;
+        }
+
+        .book-details {
+            padding: 18px;
+        }
+
         .book-title {
-            color: white;
-            font-size: 18px;
-            font-weight: bold;
-            margin-top: 10px;
+            color: #222;
+            font-size: 17px;
+            font-weight: 700;
+            line-height: 1.4;
+            min-height: 48px;
         }
 
         .book-author {
-            color: #dddddd;
-            font-size: 16px;
+            color: #777;
+            font-size: 14px;
+            margin-top: 10px;
         }
 
-        .message {
-            color: #ffc107;
-            font-size: 20px;
-            font-weight: bold;
-            margin-top: 30px;
+        /* Message */
+
+        .message-box {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #fff3cd;
+            color: #856404;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 600;
         }
+
+        /* Footer */
+
+        footer {
+            margin-top: 70px;
+            padding: 30px;
+            text-align: center;
+            background: #20252b;
+            color: #aaa;
+        }
+
+        footer strong {
+            color: white;
+        }
+
+        @media (max-width: 600px) {
+
+            .search-section h1 {
+                font-size: 34px;
+            }
+
+            .search-form {
+                flex-direction: column;
+                background: transparent;
+                box-shadow: none;
+            }
+
+            .search-input {
+                margin-bottom: 10px;
+            }
+
+            .search-button {
+                width: 100%;
+            }
+
+        }
+
     </style>
+
 </head>
 
 <body>
 
+
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg" style="background-color:#00a65a">
+
+<nav class="navbar navbar-expand-lg">
 
     <a class="navbar-brand" href="/">
-        My Book Recommender
+        <i class="fa-solid fa-book-open"></i>
+        BookVerse
     </a>
 
     <ul class="navbar-nav ml-auto">
@@ -111,120 +256,135 @@
             </a>
         </li>
 
-        <li class="nav-item">
-            <a class="nav-link" href="#">
-                Contact
-            </a>
-        </li>
-
     </ul>
 
 </nav>
 
 
-<!-- Main Content -->
-<div class="container">
+<!-- Search Section -->
+
+<section class="search-section">
+
+    <h1>Find Your Next Favorite Book</h1>
+
+    <p>
+        Enter a book you love and we'll find similar books for you.
+    </p>
+
+
+    <form
+        action="/recommend_books"
+        method="post"
+        class="search-form"
+    >
+
+        <input
+            type="text"
+            name="user_input"
+            class="search-input"
+            placeholder="Enter a book name..."
+            required
+        >
+
+        <button
+            type="submit"
+            class="search-button"
+        >
+            <i class="fa-solid fa-magnifying-glass"></i>
+            Recommend
+        </button>
+
+    </form>
+
+</section>
+
+
+<!-- Results -->
+
+<div class="container results-section">
+
+    {% if message %}
+
+    <div class="message-box">
+
+        <i class="fa-solid fa-circle-exclamation"></i>
+
+        {{ message }}
+
+    </div>
+
+    {% endif %}
+
+
+    {% if data %}
+
+    <h2 class="results-title">
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+        Recommended For You
+    </h2>
+
 
     <div class="row">
 
-        <div class="col-md-12">
+        {% for i in data %}
 
-            <h1 class="page-title">
-                Recommend Books
-            </h1>
+        <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 mb-4">
 
-            <!-- Search Form -->
-            <form
-                action="/recommend_books"
-                method="post"
-                class="search-box"
-            >
+            <div class="book-card">
 
-                <input
-                    name="user_input"
-                    type="text"
-                    class="form-control form-control-lg"
-                    placeholder="Enter a book name..."
-                    required
-                >
-
-                <br>
-
-                <button
-                    type="submit"
-                    class="btn btn-lg btn-warning"
-                >
-                    Recommend
-                </button>
-
-            </form>
-
-        </div>
-
-
-        <!-- Message -->
-        {% if message %}
-
-        <div class="col-md-12">
-
-            <p class="message">
-                {{ message }}
-            </p>
-
-        </div>
-
-        {% endif %}
-
-
-        <!-- Recommended Books -->
-        {% if data %}
-
-            <div class="col-md-12">
-
-                <h2 class="text-white mt-5">
-                    Recommended Books
-                </h2>
-
-            </div>
-
-            {% for i in data %}
-
-            <div
-                class="col-lg-3 col-md-4 col-sm-6"
-                style="margin-top:40px"
-            >
-
-                <div class="card">
+                <div class="book-image-container">
 
                     <img
-                        class="card-img-top"
+                        class="book-image"
                         src="{{ i[2] }}"
                         alt="{{ i[0] }}"
+                        loading="lazy"
+                        onerror="this.src='https://via.placeholder.com/300x400?text=No+Image'"
                     >
 
-                    <div class="card-body">
+                </div>
 
-                        <p class="book-title">
-                            {{ i[0] }}
-                        </p>
 
-                        <p class="book-author">
-                            {{ i[1] }}
-                        </p>
+                <div class="book-details">
 
+                    <div class="book-title">
+                        {{ i[0] }}
+                    </div>
+
+                    <div class="book-author">
+                        <i class="fa-solid fa-user"></i>
+                        {{ i[1] }}
                     </div>
 
                 </div>
 
             </div>
 
-            {% endfor %}
+        </div>
 
-        {% endif %}
+        {% endfor %}
 
     </div>
 
+    {% endif %}
+
 </div>
+
+
+<!-- Footer -->
+
+<footer>
+
+    <p>
+        <strong>BookVerse</strong> — Your Personal Book Recommender
+    </p>
+
+    <p>
+        Built with Python, Flask & Machine Learning
+    </p>
+
+</footer>
+
 
 </body>
 </html>
