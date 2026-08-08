@@ -4,21 +4,26 @@
 <head>
 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Book Recommendations | BookVerse</title>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <!-- Bootstrap -->
+    <title>Recommendations | BookVerse</title>
+
+
     <link
         rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
     >
 
-    <!-- Font Awesome -->
+
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     >
+
 
     <style>
 
@@ -26,103 +31,170 @@
             box-sizing: border-box;
         }
 
+
         body {
+
             margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
             background: #f5f7fb;
         }
 
-        /* ================= NAVBAR ================= */
+
+        /* =================================================
+           NAVBAR
+        ================================================= */
 
         .navbar {
-            background: linear-gradient(135deg, #00a65a, #008f4c);
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #00a65a,
+                    #008f4c
+                );
+
             padding: 16px 7%;
-            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.12);
+
+            box-shadow:
+                0 3px 15px
+                rgba(0, 0, 0, 0.12);
         }
 
+
         .navbar-brand {
+
             color: white !important;
+
             font-size: 25px;
+
             font-weight: 700;
         }
 
+
         .navbar-brand i {
+
             margin-right: 8px;
         }
 
+
         .nav-link {
+
             color: white !important;
+
             font-size: 16px;
+
             margin-left: 20px;
         }
 
+
         .nav-link:hover {
+
             color: #d8ffe9 !important;
         }
 
-        /* ================= SEARCH SECTION ================= */
+
+        /* =================================================
+           SEARCH SECTION
+        ================================================= */
 
         .search-section {
-            background: linear-gradient(
-                135deg,
-                #00a65a,
-                #008f4c
-            );
 
-            padding: 65px 20px 75px;
+            background:
+                linear-gradient(
+                    135deg,
+                    #00a65a,
+                    #008f4c
+                );
+
+            padding:
+                65px
+                20px
+                75px;
+
             color: white;
+
             text-align: center;
         }
 
+
         .search-section h1 {
+
             font-size: 45px;
+
             font-weight: 800;
+
             margin-bottom: 12px;
         }
 
+
         .search-section p {
+
             font-size: 18px;
+
             opacity: 0.9;
+
             margin-bottom: 30px;
         }
 
-        /* ================= SEARCH BAR ================= */
+
+        /* =================================================
+           SEARCH BAR
+        ================================================= */
 
         .search-form {
+
             max-width: 700px;
+
             margin: auto;
 
             display: flex;
 
             background: white;
+
             padding: 6px;
 
             border-radius: 50px;
 
             box-shadow:
-                0 8px 25px rgba(0, 0, 0, 0.18);
+                0 8px 25px
+                rgba(0, 0, 0, 0.18);
         }
 
+
         .search-input {
+
             flex: 1;
 
             border: none;
+
             outline: none;
 
-            padding: 15px 20px;
+            padding:
+                15px
+                20px;
 
             font-size: 16px;
 
             border-radius: 50px;
         }
 
+
         .search-button {
+
             border: none;
 
             background: #ffb400;
+
             color: #222;
 
-            padding: 12px 25px;
+            padding:
+                12px
+                25px;
 
             border-radius: 50px;
 
@@ -133,20 +205,31 @@
             transition: 0.2s;
         }
 
+
         .search-button:hover {
+
             background: #ffa500;
+
             transform: scale(1.02);
         }
 
-        /* ================= RESULTS ================= */
+
+        /* =================================================
+           RESULTS
+        ================================================= */
 
         .results-section {
+
             padding-top: 50px;
+
             padding-bottom: 30px;
         }
 
+
         .results-title {
+
             font-size: 30px;
+
             font-weight: 800;
 
             margin-bottom: 35px;
@@ -154,9 +237,13 @@
             color: #222;
         }
 
-        /* ================= BOOK CARD ================= */
+
+        /* =================================================
+           BOOK CARD
+        ================================================= */
 
         .book-card {
+
             background: white;
 
             border-radius: 15px;
@@ -165,25 +252,38 @@
 
             height: 100%;
 
-            border: 1px solid #e9ecef;
+            border:
+                1px solid #e9ecef;
 
             box-shadow:
-                0 5px 18px rgba(0, 0, 0, 0.07);
+                0 5px 18px
+                rgba(0, 0, 0, 0.07);
 
-            transition: all 0.25s ease;
+            transition:
+                all 0.25s ease;
         }
+
 
         .book-card:hover {
-            transform: translateY(-8px);
+
+            transform:
+                translateY(-8px);
 
             box-shadow:
-                0 14px 30px rgba(0, 0, 0, 0.14);
+                0 14px 30px
+                rgba(0, 0, 0, 0.14);
         }
 
+
+        /* =================================================
+           SAME IMAGE STYLE AS HOME PAGE
+        ================================================= */
+
         .book-image-container {
+
             width: 100%;
 
-            height: 330px;
+            height: 360px;
 
             background: #eef1f4;
 
@@ -193,23 +293,38 @@
 
             align-items: center;
 
-            padding: 15px;
+            padding: 12px;
         }
 
+
         .book-image {
-            width: 100%;
+
+            display: block;
+
+            width: auto;
+
             height: 100%;
+
+            max-width: 100%;
 
             object-fit: contain;
 
             border-radius: 6px;
         }
 
+
+        /* =================================================
+           DETAILS
+        ================================================= */
+
         .book-details {
+
             padding: 18px;
         }
 
+
         .book-title {
+
             color: #222;
 
             font-size: 17px;
@@ -221,7 +336,9 @@
             min-height: 48px;
         }
 
+
         .book-author {
+
             color: #777;
 
             font-size: 14px;
@@ -229,13 +346,18 @@
             margin-top: 10px;
         }
 
-        /* ================= MESSAGE ================= */
+
+        /* =================================================
+           MESSAGE
+        ================================================= */
 
         .message-box {
 
             max-width: 600px;
 
-            margin: 40px auto;
+            margin:
+                40px
+                auto;
 
             padding: 20px;
 
@@ -248,10 +370,12 @@
             text-align: center;
 
             font-weight: 600;
-
         }
 
-        /* ================= FOOTER ================= */
+
+        /* =================================================
+           FOOTER
+        ================================================= */
 
         footer {
 
@@ -264,20 +388,26 @@
             background: #20252b;
 
             color: #aaa;
-
         }
 
+
         footer strong {
+
             color: white;
         }
 
-        /* ================= MOBILE ================= */
+
+        /* =================================================
+           MOBILE
+        ================================================= */
 
         @media (max-width: 600px) {
 
             .search-section h1 {
+
                 font-size: 34px;
             }
+
 
             .search-form {
 
@@ -286,27 +416,26 @@
                 background: transparent;
 
                 box-shadow: none;
-
             }
+
 
             .search-input {
 
                 margin-bottom: 10px;
 
                 background: white;
-
             }
+
 
             .search-button {
 
                 width: 100%;
-
             }
+
 
             .book-image-container {
 
-                height: 300px;
-
+                height: 320px;
             }
 
         }
@@ -319,11 +448,17 @@
 <body>
 
 
-<!-- ================= NAVBAR ================= -->
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
 
 <nav class="navbar navbar-expand-lg">
 
-    <a class="navbar-brand" href="/">
+
+    <a
+        class="navbar-brand"
+        href="/"
+    >
 
         <i class="fa-solid fa-book-open"></i>
 
@@ -334,9 +469,13 @@
 
     <ul class="navbar-nav ml-auto">
 
+
         <li class="nav-item">
 
-            <a class="nav-link" href="/">
+            <a
+                class="nav-link"
+                href="/"
+            >
                 Home
             </a>
 
@@ -345,27 +484,41 @@
 
         <li class="nav-item">
 
-            <a class="nav-link" href="/recommend">
+            <a
+                class="nav-link"
+                href="/recommend"
+            >
                 Recommend
             </a>
 
         </li>
 
+
     </ul>
+
 
 </nav>
 
 
-<!-- ================= SEARCH ================= -->
+<!-- =====================================================
+     SEARCH SECTION
+===================================================== -->
 
 <section class="search-section">
 
+
     <h1>
+
         Find Your Next Favorite Book
+
     </h1>
 
+
     <p>
-        Enter a book you love and we'll find similar books for you.
+
+        Enter a book you love
+        and we'll find similar books for you.
+
     </p>
 
 
@@ -374,6 +527,7 @@
         method="post"
         class="search-form"
     >
+
 
         <input
             type="text"
@@ -390,48 +544,70 @@
             class="search-button"
         >
 
-            <i class="fa-solid fa-magnifying-glass"></i>
+            <i
+                class="fa-solid fa-magnifying-glass"
+            ></i>
 
             Recommend
 
         </button>
 
+
     </form>
+
 
 </section>
 
 
-<!-- ================= RESULTS ================= -->
+<!-- =====================================================
+     RESULTS
+===================================================== -->
 
-<div class="container results-section">
+<div
+    class="
+        container
+        results-section
+    "
+>
 
-
-    <!-- Error / Information Message -->
 
     {% if message %}
 
+
     <div class="message-box">
 
-        <i class="fa-solid fa-circle-exclamation"></i>
+
+        <i
+            class="fa-solid fa-circle-exclamation"
+        ></i>
+
 
         {{ message }}
 
+
     </div>
+
 
     {% endif %}
 
 
-    <!-- Recommendations -->
 
     {% if data %}
 
+
     <h2 class="results-title">
 
-        <i class="fa-solid fa-wand-magic-sparkles"></i>
+
+        <i
+            class="fa-solid fa-wand-magic-sparkles"
+        ></i>
+
 
         Recommended For You
 
+
     </h2>
+
 
 
     <div class="row">
@@ -439,51 +615,80 @@
 
         {% for i in data %}
 
-        <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 mb-4 book-column">
+
+        <div
+            class="
+                col-xl-3
+                col-lg-3
+                col-md-4
+                col-sm-6
+                mb-4
+                book-column
+            "
+        >
 
 
             <div class="book-card">
 
 
+                <!-- IMAGE -->
+
                 <div class="book-image-container">
+
 
                     <img
                         class="book-image"
                         src="{{ i[2] }}"
                         alt="{{ i[0] }}"
                         loading="lazy"
-                        onerror="this.closest('.book-column').remove();"
+                        onerror="
+                            this.closest(
+                                '.book-column'
+                            ).remove();
+                        "
                     >
+
 
                 </div>
 
 
+                <!-- DETAILS -->
+
                 <div class="book-details">
 
+
                     <div class="book-title">
+
                         {{ i[0] }}
+
                     </div>
 
 
                     <div class="book-author">
 
-                        <i class="fa-solid fa-user"></i>
+                        <i
+                            class="fa-solid fa-user"
+                        ></i>
 
                         {{ i[1] }}
 
                     </div>
 
+
                 </div>
+
 
             </div>
 
 
         </div>
 
+
         {% endfor %}
 
 
     </div>
+
 
     {% endif %}
 
@@ -491,9 +696,12 @@
 </div>
 
 
-<!-- ================= FOOTER ================= -->
+<!-- =====================================================
+     FOOTER
+===================================================== -->
 
 <footer>
+
 
     <p>
 
@@ -503,14 +711,18 @@
 
     </p>
 
+
     <p>
 
-        Built with Python, Flask & Machine Learning
+        Built with Python,
+        Flask & Machine Learning
 
     </p>
+
 
 </footer>
 
 
 </body>
+
 </html>
